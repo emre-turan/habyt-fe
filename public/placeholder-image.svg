@@ -1,0 +1,20 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f3f4f6" />
+  
+  <!-- Building Outline -->
+  <rect x="250" y="150" width="300" height="300" fill="#e5e7eb" stroke="#d1d5db" stroke-width="8" />
+  
+  <!-- Windows -->
+  <rect x="280" y="180" width="80" height="80" fill="#ffffff" stroke="#d1d5db" stroke-width="4" />
+  <rect x="440" y="180" width="80" height="80" fill="#ffffff" stroke="#d1d5db" stroke-width="4" />
+  <rect x="280" y="280" width="80" height="80" fill="#ffffff" stroke="#d1d5db" stroke-width="4" />
+  <rect x="440" y="280" width="80" height="80" fill="#ffffff" stroke="#d1d5db" stroke-width="4" />
+  
+  <!-- Door -->
+  <rect x="360" y="380" width="80" height="70" fill="#ffffff" stroke="#d1d5db" stroke-width="4" />
+  <circle cx="425" cy="415" r="5" fill="#9ca3af" />
+  
+  <!-- Text -->
+  <text x="400" y="500" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#6b7280">Image Not Available</text>
+</svg> 

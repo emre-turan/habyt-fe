@@ -1,0 +1,760 @@
+openapi: 3.0.0
+info:
+  title: Habyt
+  description: |-
+    This document covers the latest version of the Habyt booking API.
+
+    Considerations
+    =========
+    This implementation contains various breaking changes from v1, with the goal of adopting more standard RESTful conventions as well as providing better filtering and performance.
+
+    Authentication
+    =========
+    This API uses HTTP Basic Auth. The client must send an Authorization header with a valid username and password encoded in Base64. If you do not yet have credentials please reach out to the contact in this document.
+
+    Example: `Authorization: Basic base64(username:password)`
+    
+    Dates
+    =========
+    All dates should be provided in format: 'YYYY-MM-DD'
+
+  contact:
+    name: Robbie Fryers
+    email: robbie.fryers@habyt.com
+    url: https://www.habyt.com
+  version: latest
+servers:
+  - url: https://staging.habyt.com/api/v2/partner
+    description: Staging Env
+  - url: https://www.habyt.com/api/v2/partner
+    description: Production Env
+security:
+  - basicAuth: []
+paths:
+  "/rooms":
+    get:
+      tags:
+        - Endpoints
+      summary: Gets a list of rooms for rent.
+      operationId: getRooms
+      parameters:
+        - name: Authorization
+          in: header
+          description: "Custom authentication header required"
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Basic dGVzdDp0ZXN0
+
+        - name: sort
+          in: query
+          description: Sorting criteria (multiple values supported).
+          required: false
+          style: form
+          explode: true
+          schema:
+            default: -country
+            type: array
+            items:
+              type: string
+              enum:
+                [country, -country, rentNet, -rentNet, bookableOn, -bookableOn]
+
+        - name: page
+          in: query
+          description: Zero-based page index (0...n).
+          required: false
+          schema:
+            default: 0
+            type: integer
+
+        - name: pageSize
+          in: query
+          description: Number of rooms to return per page.
+          required: false
+          schema:
+            default: 100
+            type: integer
+
+        - name: bookable
+          in: query
+          description: Filter by rooms that may be booked at any date in the future.
+          required: false
+          schema:
+            type: boolean
+
+        - name: bookableOn
+          in: query
+          description: Filter by rooms that can be booked on this specific date.
+          required: false
+          schema:
+            type: string
+            format: date
+            example: 2024-10-10
+
+        - name: bookableFrom
+          in: query
+          description: Filter by rooms that can be booked on or after this specific date.
+          required: false
+          schema:
+            type: string
+            format: date
+            example: 2024-10-10
+
+        - name: bookableTo
+          in: query
+          description: Filter by rooms that can be booked on or before this specific date.
+          required: false
+          schema:
+            type: string
+            format: date
+            example: 2024-10-10
+
+        - name: referenceId
+          in: query
+          description: Filter by room with this unique reference id.
+          required: false
+          schema:
+            type: string
+            example: PT-1234-567
+
+        - name: countryCode
+          in: query
+          description: Filter by rooms in given country/countries. Expects an array of ISO 3166-1 alpha-2 country codes.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            example: [DE, ES]
+
+        - name: city
+          in: query
+          description: Filter by rooms in given city/cities.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            example: [Berlin, Madrid]
+
+        - name: shareType
+          in: query
+          description: Filter by room share type(multiple values supported).
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [PrivateRoom, SharedRoom, PrivateApartment, Studio]
+
+        - name: postalCode
+          in: query
+          description: Filter by postal code of property.
+          required: false
+          schema:
+            type: string
+            example: 1000-111
+
+        - name: bedroomsFrom
+          in: query
+          description: Filter by rooms in apartments with at least n rooms.
+          required: false
+          schema:
+            type: integer
+            example: 3
+
+        - name: bedroomsTo
+          in: query
+          description: Filter by rooms in apartments with at most n rooms.
+          required: false
+          schema:
+            type: integer
+            example: 5
+
+        - name: rentFrom
+          in: query
+          description: Filter by rooms with a net monthly rent of at least x. (this value does not include fees or deposit).
+          required: false
+          schema:
+            type: number
+            example: 600
+
+        - name: rentTo
+          in: query
+          description: Filter by rooms with a net monthly rent of at most x. (this value does not include fees or deposit).
+          required: false
+          schema:
+            type: number
+            example: 1200
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomsSuccessResponse"
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomsBadResponse"
+        "401":
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalErrorResponse"
+        "503":
+          description: API unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnavailableResponse"
+
+
+  "/book":
+    post:
+      tags:
+        - Endpoints
+      summary: Create a new partner booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingRequest"
+      responses:
+        "200":
+          description: Successful booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingSuccessResponse"
+        "400":
+          description: Bad booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingBadResponse"
+        "401":
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalErrorResponse"
+        "503":
+          description: API unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnavailableResponse"
+
+
+  "/lead":
+    post:
+      tags:
+        - Endpoints
+      summary: Create a new lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadRequest"
+      responses:
+        "200":
+          description: Successful booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadSuccessResponse"
+        "400":
+          description: Bad booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeadBadResponse"
+        "401":
+          description: Unauthorized request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalErrorResponse"
+        "503":
+          description: API unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnavailableResponse"
+
+components:
+  schemas:
+
+    RoomsSuccessResponse:
+      type: object
+      properties:
+        metadata:
+          type: object
+          properties:
+            pagination:
+              type: object
+              properties:
+                currentPage:
+                  type: integer
+                  format: int32
+                currentPageSize:
+                  type: integer
+                  format: int32
+                totalPages:
+                  type: integer
+                  format: int32
+                hasNextPage:
+                  type: boolean
+                hasPrevPage:
+                  type: boolean
+            filters:
+              type: object
+              properties:
+                referenceId:
+                  type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              referenceId:
+                type: string
+                description: unique identifier for the rentable room
+                example: PT-1234-567
+              bookable:
+                type: boolean
+                description: room is bookable at some date in the future
+              shareType:
+                type: string
+                enum: [PrivateApartment, Studio, PrivateRoom, SharedRoom]
+              currency:
+                type: string
+                description: ISO 4217 currency code
+                example: EUR
+              rentGross:
+                type: integer
+                format: int32
+                description: gross rent of the room (excluding fees)
+                example: 1000
+              rentNet:
+                type: integer
+                format: int32
+                description: net rent of the room (excluding fees)
+                example: 900
+              discount:
+                type: integer
+                format: int32
+                description: current discount of the room (0 if none)
+                example: 100
+              discountDescription:
+                type: string
+                format: nullable
+              deposit:
+                type: integer
+                format: int32
+                example: 2000
+              city:
+                type: string
+                example: Berlin
+                description: Name of city in english
+              cityTimezone:
+                type: string
+                description: City timezone as defined by IANA
+              countryName:
+                type: string
+                description: Name of country in english
+                example: Germany
+              countryCode:
+                type: string
+                description: ISO 3166-1 alpha-2 country code
+                example: DE
+              matterportUrl:
+                type: string
+                nullable: true
+              bookingWindow:
+                type: object
+                properties:
+                  bookableFrom:
+                    type: string
+                    format: date
+                    description: earliest date a room can be booked on
+                    example: 2024-10-10
+                  bookableTo:
+                    type: string
+                    format: date
+                    description: latest date a room can be booked on
+                    example: 2024-10-31
+              fees:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Membership fee
+                    description:
+                      type: string
+                      example: Charged only at the signature of the contract
+                    amount:
+                      type: integer
+                      format: int32
+                      example: 250
+              leaseConditions:
+                type: object
+                properties:
+                  noticePeriod:
+                    type: object
+                    properties:
+                      amount:
+                        type: integer
+                        format: int32
+                      unit:
+                        type: string
+                        enum: [Months, Days]
+                        example: Months
+                      type:
+                        type: string
+                        enum: [Any, MiddleOrEnd, End]
+                        example: End
+                        description: Periods of the month when a moveout can occur
+                  minimumStay:
+                    $ref: '#/components/schemas/TimeUnit'
+                  maximumStay:
+                    $ref: '#/components/schemas/TimeUnit'
+              roomArea:
+                type: number
+                description: Area of the room
+                example: 15
+              roomAreaUnit:
+                type: string
+                enum: [Sqm, Sqft]
+                example: Sqm
+              roomAmenities:
+                type: array
+                description: A list of amentities at the room level
+                items:
+                  type: string
+              roomDescriptions:
+                type: array
+                description: A list of descriptions at the room level
+                items:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                    description:
+                      type: string
+              roomImages:
+                type: array
+                description: A list of images at the room level
+                items:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                    size:
+                      type: integer
+                      format: int32
+              apartmentName:
+                type: string
+              apartmentFloor:
+                type: string
+              apartmentBedroomCount:
+                type: integer
+                format: int32
+              apartmentBathroomCount:
+                type: integer
+                format: int32
+              apartmentArea:
+                type: number
+                description: Area of the entire apartment
+                example: 120
+              apartmentAreaUnit:
+                type: string
+                enum: [Sqm, Sqft]
+                example: Sqm
+              apartmentAmenities:
+                type: array
+                description: A list of amentities at the apartment level
+                items:
+                  type: string
+              apartmentDescriptions:
+                type: array
+                description: A list of descriptions at the room level
+                items:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                    description:
+                      type: string
+              apartmentImages:
+                type: array
+                description: A list of images at the apartment level
+                items:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                    size:
+                      type: integer
+                      format: int32
+              propertyName:
+                type: string
+              propertyAddress:
+                type: string
+              propertyStreet:
+                type: string
+              propertyPostalCode:
+                type: string
+              propertyLatitude:
+                type: number
+              propertyLongitude:
+                type: number
+              propertyAmenities:
+                type: array
+                description: A list of amentities at the property level
+                items:
+                  type: string
+              propertyDescriptions:
+                type: array
+                description: A list of descriptions at the property level
+                items:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                    description:
+                      type: string
+              propertyImages:
+                type: array
+                description: A list of images at the property level
+                items:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                    size:
+                      type: integer
+                      format: int32
+
+    RoomsBadResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+        message:
+          type: string
+          example: "bookableOn format must be YYYY-MM-DD"   
+    
+    TimeUnit:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 3
+        unit:
+          type: string
+          enum: [Months, Days]
+          example: Months
+
+    BookingRequest:
+      type: object
+      required:
+        - account
+        - booking
+      properties:
+        account:
+          type: object
+          required:
+            - email
+            - firstName
+            - lastName
+            - nationalId
+            - nationality
+            - phone
+            - gender
+            - dob
+            - incomeLevel
+            - countryCode
+            - city
+            - street
+          properties:
+            email:
+              type: string
+              format: email
+            firstName:
+              type: string
+            lastName:
+              type: string
+            nationalId:
+              type: string
+            taxId:
+              type: string
+              nullable: true
+            nationality:
+              type: string
+            phone:
+              type: string
+            gender:
+              type: string
+              enum: [Male, Female, Other]
+            dob:
+              type: string
+              format: date
+            incomeLevel:
+              type: string
+              enum: [Bottom, Low, Medium, High, VeryHigh, Top]
+            profession:
+              type: string
+              nullable: true
+            countryCode:
+              type: string
+            city:
+              type: string
+            street:
+              type: string
+            state:
+              type: string
+              nullable: true
+            postalCode:
+              type: string
+              nullable: true
+        booking:
+          type: object
+          required:
+            - referenceId
+            - startDate
+            - endDate
+          properties:
+            referenceId:
+              type: string
+            startDate:
+              type: string
+              format: date
+            endDate:
+              type: string
+              format: date
+
+    BookingSuccessResponse:
+      type: object
+      properties:
+        bookingReference:
+          type: string
+          example: "12345678"
+        accountReference:
+          type: string
+          example: "12345678"
+
+    BookingBadResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+        message:
+          type: string
+          example: "booking request, room unavailable"
+
+    LeadRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - phone
+        - moveInDate
+        - city
+      properties:
+        firstName:  
+          type: string
+        lastName:  
+          type: string
+        email:  
+          type: string
+          format: email
+        phone:  
+          type: string
+        moveInDate:  
+          type: string
+          format: date
+        city:  
+          type: string
+
+    LeadSuccessResponse:
+      type: object
+      properties:
+        leadReference:
+          type: string
+          example: "12345678"
+
+    LeadBadResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+        message:
+          type: string
+          example: "blacklisted email"
+
+    UnauthorizedResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 401
+        message:
+          type: string
+          example: "Unauthorized"
+
+    UnavailableResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 503
+        message:
+          type: string
+          example: "Server not available"
+
+    InternalErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 500
+        message:
+          type: string
+          example: "Internal server error"
