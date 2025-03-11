@@ -43,6 +43,3 @@ next-env.d.ts
 # Developer files
 .cursor
 
-# Bun
-.bun
-bun.lockb
