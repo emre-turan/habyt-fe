@@ -1,17 +1,17 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
+import { useState } from "react"
 
 interface Option {
-  label: string;
-  value: string;
+  label: string
+  value: string
 }
 
 interface OptionSelectFilterProps {
-  label: string;
-  options: Option[];
-  selectedValues: string[];
-  onChange: (values: string[]) => void;
+  label: string
+  options: Option[]
+  selectedValues: string[]
+  onChange: (values: string[]) => void
 }
 
 export default function OptionSelectFilter({
@@ -20,15 +20,15 @@ export default function OptionSelectFilter({
   selectedValues,
   onChange,
 }: OptionSelectFilterProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleToggle = (value: string) => {
     if (selectedValues.includes(value)) {
-      onChange(selectedValues.filter((v) => v !== value));
+      onChange(selectedValues.filter((v) => v !== value))
     } else {
-      onChange([...selectedValues, value]);
+      onChange([...selectedValues, value])
     }
-  };
+  }
 
   return (
     <div className="relative">
@@ -38,10 +38,11 @@ export default function OptionSelectFilter({
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="text-sm font-medium text-gray-700">
-          {label}: {selectedValues.length ? `${selectedValues.length} selected` : 'Any'}
+          {label}:{" "}
+          {selectedValues.length ? `${selectedValues.length} selected` : "Any"}
         </span>
         <svg
-          className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}
+          className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? "transform rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -74,5 +75,5 @@ export default function OptionSelectFilter({
         </div>
       )}
     </div>
-  );
-} 
+  )
+}
