@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 
-import FilterBar from "../components/FilterBar"
-import ListingCard from "../components/ListingCard"
-import { APIResponse, Listing } from "../types/listing"
+import { APIResponse, Listing } from "@/types/listing"
+import { FilterBar } from "@/components/filters/filter-bar"
+import { ListingCard } from "@/components/listings/listing-card"
 
 export default function Listings() {
   const searchParams = useSearchParams()

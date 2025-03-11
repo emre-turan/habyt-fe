@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 import Link from "next/link"
 
-import MarkdownContent from "./components/MarkdownContent"
+import { MarkdownContent } from "@/components/shared/markdown-content"
 
 export default function Home() {
   // Read the README.md file content

@@ -14,7 +14,7 @@ interface OptionSelectFilterProps {
   onChange: (values: string[]) => void
 }
 
-export default function OptionSelectFilter({
+export function OptionSelectFilter({
   label,
   options,
   selectedValues,

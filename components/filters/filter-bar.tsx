@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
-import OptionSelectFilter from "./OptionSelectFilter"
+import { OptionSelectFilter } from "./option-select-filter"
 
 // Share types based on the API schema
 const shareTypes = [
@@ -13,7 +13,7 @@ const shareTypes = [
   { label: "Shared Room", value: "SharedRoom" },
 ]
 
-export default function FilterBar() {
+export function FilterBar() {
   const router = useRouter()
   const searchParams = useSearchParams()
 

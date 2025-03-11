@@ -6,7 +6,7 @@ interface MarkdownContentProps {
   markdown: string
 }
 
-export default function MarkdownContent({ markdown }: MarkdownContentProps) {
+export function MarkdownContent({ markdown }: MarkdownContentProps) {
   const [htmlContent, setHtmlContent] = useState<string>("")
 
   useEffect(() => {

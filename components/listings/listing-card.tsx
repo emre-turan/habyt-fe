@@ -1,12 +1,12 @@
 import Image from "next/image"
 
-import { Listing } from "../types/listing"
+import { Listing } from "@/types/listing"
 
 interface ListingCardProps {
   listing: Listing
 }
 
-export default function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing }: ListingCardProps) {
   // Get the first image from property, apartment, or room (in that order of preference)
   const getMainImage = () => {
     if (listing.propertyImages && listing.propertyImages.length > 0) {
