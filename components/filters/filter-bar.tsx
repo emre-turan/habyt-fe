@@ -121,7 +121,7 @@ export function FilterBar() {
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle>Filter Listings</CardTitle>
+        <CardTitle>Find Your Perfect Home</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">

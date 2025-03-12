@@ -145,7 +145,7 @@ export function ListingCard({ listing }: ListingCardProps) {
           </div>
           <div className="text-right">
             {listing.discount > 0 && (
-              <span className="text-muted-foreground line-through mr-2 text-sm">
+              <span className="text-muted-foreground line-through mr-2 text-xs font-bold">
                 {formatCurrency(listing.rentGross)}
               </span>
             )}
