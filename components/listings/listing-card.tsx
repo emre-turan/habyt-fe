@@ -1,5 +1,3 @@
-import Image from "next/image"
-
 import {
   BedIcon,
   HomeIcon,
@@ -8,10 +6,9 @@ import {
 } from "lucide-react"
 
 import type { Listing } from "@/types/listing"
-import { geistMono } from "@/lib/fonts"
+import { formatCurrency } from "@/lib/format-currency"
+import { formatMinimumStay } from "@/lib/lease-conditions"
 import { formatShareType } from "@/lib/share-types"
-import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
@@ -22,25 +19,13 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 
+import { ListingImage } from "./listing-image"
+
 interface ListingCardProps {
   listing: Listing
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
-  // Get the first image from property, apartment, or room (in that order of preference)
-  const getMainImage = () => {
-    if (listing.propertyImages && listing.propertyImages.length > 0) {
-      return listing.propertyImages[0].url
-    }
-    if (listing.apartmentImages && listing.apartmentImages.length > 0) {
-      return listing.apartmentImages[0].url
-    }
-    if (listing.roomImages && listing.roomImages.length > 0) {
-      return listing.roomImages[0].url
-    }
-    return "/placeholder-image.svg" // Fallback image
-  }
-
   // Get a description in english if available
   const getDescription = () => {
     const descriptions = [...(listing.roomDescriptions || [])]
@@ -48,44 +33,10 @@ export function ListingCard({ listing }: ListingCardProps) {
     return englishDesc?.description || "No description available"
   }
 
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: listing.currency || "EUR",
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
-
-  // Safe access to minimumStay information
-  const getMinimumStay = () => {
-    if (!listing.leaseConditions || !listing.leaseConditions.minimumStay) {
-      return "Not specified"
-    }
-    return `${listing.leaseConditions.minimumStay.amount} ${listing.leaseConditions.minimumStay.unit}`
-  }
-
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow flex flex-col py-0">
       {/* Image */}
-      <div className="relative h-48 w-full">
-        <Image
-          src={getMainImage() || "/placeholder.svg"}
-          alt={listing.propertyName || "Property"}
-          fill
-          style={{ objectFit: "cover" }}
-          priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-        <Badge
-          className={cn(
-            geistMono.className,
-            "absolute top-2 right-2 bg-primary text-primary-foreground uppercase font-normal"
-          )}
-        >
-          {formatShareType(listing.shareType)}
-        </Badge>
-      </div>
+      <ListingImage listing={listing} priority />
 
       <CardHeader>
         <CardTitle className="font-bold">
@@ -125,7 +76,9 @@ export function ListingCard({ listing }: ListingCardProps) {
             <span className="text-muted-foreground mr-1 truncate">
               Min stay:
             </span>
-            <span className="font-medium truncate">{getMinimumStay()}</span>
+            <span className="font-medium truncate">
+              {formatMinimumStay(listing)}
+            </span>
           </div>
         </div>
       </CardContent>
@@ -146,11 +99,11 @@ export function ListingCard({ listing }: ListingCardProps) {
           <div className="text-right">
             {listing.discount > 0 && (
               <span className="text-muted-foreground line-through mr-2 text-xs font-bold">
-                {formatCurrency(listing.rentGross)}
+                {formatCurrency(listing.rentGross, listing.currency)}
               </span>
             )}
             <span className="text-lg font-bold text-secondary">
-              {formatCurrency(listing.rentNet)}
+              {formatCurrency(listing.rentNet, listing.currency)}
             </span>
             <p className="text-xs text-muted-foreground -mt-1">monthly</p>
           </div>
