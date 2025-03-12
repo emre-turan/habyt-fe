@@ -1,6 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useId, useState } from "react"
+
+import { ChevronsUpDown } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 interface Option {
   label: string
@@ -8,20 +25,20 @@ interface Option {
 }
 
 interface OptionSelectFilterProps {
-  label: string
   options: Option[]
   selectedValues: string[]
   onChange: (values: string[]) => void
 }
 
 export function OptionSelectFilter({
-  label,
   options,
   selectedValues,
   onChange,
 }: OptionSelectFilterProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [open, setOpen] = useState(false)
+  const idPrefix = useId()
 
+  // Function to handle toggling individual options
   const handleToggle = (value: string) => {
     if (selectedValues.includes(value)) {
       onChange(selectedValues.filter((v) => v !== value))
@@ -30,50 +47,79 @@ export function OptionSelectFilter({
     }
   }
 
+  // Function to clear all selections
+  const handleClearAll = () => {
+    onChange([])
+  }
+
   return (
     <div className="relative">
-      <button
-        type="button"
-        className="w-full p-2 border border-gray-300 rounded-md flex justify-between items-center bg-white"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className="text-sm font-medium text-gray-700">
-          {label}:{" "}
-          {selectedValues.length ? `${selectedValues.length} selected` : "Any"}
-        </span>
-        <svg
-          className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? "transform rotate-180" : ""}`}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="justify-between text-left font-normal"
+          >
+            <span className="text-sm truncate">
+              {selectedValues.length
+                ? options
+                    .filter((opt) => selectedValues.includes(opt.value))
+                    .map((opt) => opt.label)
+                    .join(", ")
+                : "All Types of Stay"}
+            </span>
+            <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0" align="start">
+          <Command>
+            <CommandList>
+              <CommandGroup>
+                {/* All Types of Stay option */}
+                <CommandItem
+                  className="flex items-center p-2 cursor-pointer hover:underline"
+                  onSelect={handleClearAll}
+                >
+                  <span className="font-medium">All types of stay</span>
+                </CommandItem>
 
-      {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 p-2 max-h-60 overflow-auto">
-          {options.map((option) => (
-            <label
-              key={option.value}
-              className="flex items-center p-2 hover:bg-gray-100 rounded cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                checked={selectedValues.includes(option.value)}
-                onChange={() => handleToggle(option.value)}
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <span className="ml-2 text-sm text-gray-700">{option.label}</span>
-            </label>
-          ))}
-        </div>
-      )}
+                {/* Individual options with checkboxes */}
+                {options.map((option) => {
+                  const checkboxId = `${idPrefix}-option-${option.value}`
+                  return (
+                    <CommandItem
+                      key={option.value}
+                      className="flex items-center p-2 cursor-pointer hover:underline"
+                      onSelect={() => handleToggle(option.value)}
+                    >
+                      <div className="flex items-center space-x-2 flex-1">
+                        <Checkbox
+                          id={checkboxId}
+                          checked={selectedValues.includes(option.value)}
+                          onCheckedChange={() => handleToggle(option.value)}
+                          className="cursor-pointer"
+                        />
+                        <Label
+                          htmlFor={checkboxId}
+                          className="text-sm font-normal cursor-pointer flex-1"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            handleToggle(option.value)
+                          }}
+                        >
+                          {option.label}
+                        </Label>
+                      </div>
+                    </CommandItem>
+                  )
+                })}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }

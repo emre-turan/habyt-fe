@@ -158,10 +158,9 @@ export function FilterBar() {
       {/* Property type filter */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Property Type
+          Type of Stay
         </label>
         <OptionSelectFilter
-          label="Property Type"
           options={shareTypes}
           selectedValues={selectedShareTypes}
           onChange={setSelectedShareTypes}
