@@ -3,6 +3,28 @@
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { OptionSelectFilter } from "./option-select-filter"
 
 // Share types based on the API schema
@@ -30,6 +52,9 @@ export function FilterBar() {
   const [bookableOn, setBookableOn] = useState<string>(
     searchParams.get("bookableOn") || ""
   )
+  const [date, setDate] = useState<Date | undefined>(
+    bookableOn ? new Date(bookableOn) : undefined
+  )
 
   // Fetch unique cities for dropdown
   const [cities, setCities] = useState<string[]>([])
@@ -55,6 +80,15 @@ export function FilterBar() {
     fetchCities()
   }, [])
 
+  // Update bookableOn when date changes
+  useEffect(() => {
+    if (date) {
+      setBookableOn(format(date, "yyyy-MM-dd"))
+    } else {
+      setBookableOn("")
+    }
+  }, [date])
+
   const applyFilters = () => {
     const params = new URLSearchParams()
 
@@ -77,111 +111,106 @@ export function FilterBar() {
     setRentTo("")
     setSelectedShareTypes([])
     setBookableOn("")
+    setDate(undefined)
     router.push("/listings")
   }
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow mb-6">
-      <h2 className="text-lg font-semibold mb-4">Filter Listings</h2>
+    <Card className="mb-8">
+      <CardHeader>
+        <CardTitle>Filter Listings</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* City filter */}
+            <div className="space-y-1 h-10">
+              <Label htmlFor="city">City</Label>
+              <Select value={city} onValueChange={setCity}>
+                <SelectTrigger className="w-full" id="city">
+                  <SelectValue placeholder="All Cities" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Cities</SelectItem>
+                  {cities.map((cityName) => (
+                    <SelectItem key={cityName} value={cityName}>
+                      {cityName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-        {/* City filter */}
-        <div>
-          <label
-            htmlFor="city"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            City
-          </label>
-          <select
-            id="city"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="">All Cities</option>
-            {cities.map((cityName) => (
-              <option key={cityName} value={cityName}>
-                {cityName}
-              </option>
-            ))}
-          </select>
-        </div>
+            {/* Property type filter */}
+            <div className="space-y-1 h-10">
+              <Label>Type of Stay</Label>
+              <OptionSelectFilter
+                options={shareTypes}
+                selectedValues={selectedShareTypes}
+                onChange={setSelectedShareTypes}
+              />
+            </div>
 
-        {/* Price range filter */}
-        <div>
-          <label
-            htmlFor="rentFrom"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Monthly Rent
-          </label>
-          <div className="flex items-center space-x-2">
-            <input
-              type="number"
-              id="rentFrom"
-              placeholder="Min"
-              value={rentFrom}
-              onChange={(e) => setRentFrom(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
-            <span>-</span>
-            <input
-              type="number"
-              id="rentTo"
-              placeholder="Max"
-              value={rentTo}
-              onChange={(e) => setRentTo(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
+            {/* Price range filter */}
+            <div className="space-y-1 h-10">
+              <Label>Monthly Rent</Label>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="number"
+                  id="rentFrom"
+                  placeholder="Min"
+                  value={rentFrom}
+                  onChange={(e) => setRentFrom(e.target.value)}
+                />
+                <span>-</span>
+                <Input
+                  type="number"
+                  id="rentTo"
+                  placeholder="Max"
+                  value={rentTo}
+                  onChange={(e) => setRentTo(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Move-in date filter */}
+            <div className="space-y-1 h-10">
+              <Label htmlFor="bookableOn">Move-in Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="bookableOn"
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex justify-end space-x-2 pt-2">
+            <Button variant="outline" onClick={resetFilters}>
+              Reset
+            </Button>
+            <Button onClick={applyFilters}>Apply Filters</Button>
           </div>
         </div>
-
-        {/* Move-in date filter */}
-        <div>
-          <label
-            htmlFor="bookableOn"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Move-in Date
-          </label>
-          <input
-            type="date"
-            id="bookableOn"
-            value={bookableOn}
-            onChange={(e) => setBookableOn(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-      </div>
-
-      {/* Property type filter */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Type of Stay
-        </label>
-        <OptionSelectFilter
-          options={shareTypes}
-          selectedValues={selectedShareTypes}
-          onChange={setSelectedShareTypes}
-        />
-      </div>
-
-      {/* Action buttons */}
-      <div className="flex justify-end space-x-2">
-        <button
-          onClick={resetFilters}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Reset
-        </button>
-        <button
-          onClick={applyFilters}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
-        >
-          Apply Filters
-        </button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

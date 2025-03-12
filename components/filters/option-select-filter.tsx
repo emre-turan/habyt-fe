@@ -60,9 +60,9 @@ export function OptionSelectFilter({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="justify-between text-left font-normal"
+            className="justify-between text-left font-normal w-full"
           >
-            <span className="text-sm truncate">
+            <span className="text-sm truncate max-w-[200px] inline-block">
               {selectedValues.length
                 ? options
                     .filter((opt) => selectedValues.includes(opt.value))
