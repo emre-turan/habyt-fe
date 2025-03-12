@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
 
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
@@ -9,6 +8,7 @@ import { CalendarIcon } from "lucide-react"
 import { Listing } from "@/types/listing"
 import { getShareTypeOptions } from "@/lib/share-types"
 import { cn } from "@/lib/utils"
+import { useListingsFilters } from "@/hooks/use-listing-filters"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,26 +30,20 @@ import {
 import { OptionSelectFilter } from "./option-select-filter"
 
 export function FilterBar() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  // Use the custom hook for filter state management
+  const { filters, setters, actions } = useListingsFilters()
 
-  // Initialize state from URL parameters
-  const [city, setCity] = useState<string>(searchParams.get("city") || "")
-  const [rentFrom, setRentFrom] = useState<string>(
-    searchParams.get("rentFrom") || ""
-  )
-  const [rentTo, setRentTo] = useState<string>(searchParams.get("rentTo") || "")
-  const [selectedShareTypes, setSelectedShareTypes] = useState<string[]>(() => {
-    const params = searchParams.getAll("shareType")
-    return params.length > 0 ? params : []
-  })
-  const [bookableOn, setBookableOn] = useState<string>(
-    searchParams.get("bookableOn") || ""
-  )
-  const [date, setDate] = useState<Date | undefined>(
-    bookableOn ? new Date(bookableOn) : undefined
-  )
-  const [calendarOpen, setCalendarOpen] = useState(false)
+  // Destructure values from the hook
+  const { city, rentFrom, rentTo, selectedShareTypes, date, calendarOpen } =
+    filters
+  const {
+    setCity,
+    setRentFrom,
+    setRentTo,
+    setCalendarOpen,
+    setSelectedShareTypes,
+  } = setters
+  const { handleSelectDate, applyFilters, resetFilters } = actions
 
   // Get share type options from utility
   const shareTypes = getShareTypeOptions()
@@ -77,46 +71,6 @@ export function FilterBar() {
 
     fetchCities()
   }, [])
-
-  // Update bookableOn when date changes
-  useEffect(() => {
-    if (date) {
-      setBookableOn(format(date, "yyyy-MM-dd"))
-    } else {
-      setBookableOn("")
-    }
-  }, [date])
-
-  const handleSelectDate = (newDate: Date | undefined) => {
-    setDate(newDate)
-    setCalendarOpen(false)
-  }
-
-  const applyFilters = () => {
-    const params = new URLSearchParams()
-
-    if (city) params.append("city", city)
-    if (rentFrom) params.append("rentFrom", rentFrom)
-    if (rentTo) params.append("rentTo", rentTo)
-    if (bookableOn) params.append("bookableOn", bookableOn)
-
-    // Add all selected share types
-    selectedShareTypes.forEach((type) => {
-      params.append("shareType", type)
-    })
-
-    router.push(`/listings?${params.toString()}`)
-  }
-
-  const resetFilters = () => {
-    setCity("")
-    setRentFrom("")
-    setRentTo("")
-    setSelectedShareTypes([])
-    setBookableOn("")
-    setDate(undefined)
-    router.push("/listings")
-  }
 
   return (
     <Card className="mb-8">
