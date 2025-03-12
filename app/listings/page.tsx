@@ -3,9 +3,14 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 
-import { APIResponse, Listing } from "@/types/listing"
+import type { APIResponse, Listing } from "@/types/listing"
+import { Button } from "@/components/ui/button"
 import { FilterBar } from "@/components/filters/filter-bar"
+import { EmptyState } from "@/components/listings/empty-state"
+import { ErrorState } from "@/components/listings/error-state"
 import { ListingCard } from "@/components/listings/listing-card"
+import { LoadingState } from "@/components/listings/loading-state"
+import { ListingsPagination } from "@/components/listings/pagination"
 
 export default function Listings() {
   const searchParams = useSearchParams()
@@ -73,36 +78,15 @@ export default function Listings() {
   return (
     <main className="max-w-7xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Available Listings</h1>
-
       {/* Filter section */}
       <FilterBar />
-
       {/* Loading state */}
-      {loading && (
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
-      )}
-
+      {loading && <LoadingState />}
       {/* Error state */}
-      {error && !loading && (
-        <div className="p-4 text-red-500 bg-red-100 rounded-md mb-6">
-          {error}
-        </div>
-      )}
+      {error && !loading && <ErrorState message={error} />}
 
       {/* Empty state */}
-      {!loading && !error && listings.length === 0 && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <h3 className="text-xl font-medium text-gray-600 mb-2">
-            No listings found
-          </h3>
-          <p className="text-gray-500">
-            Try adjusting your filters to find more results.
-          </p>
-        </div>
-      )}
-
+      {!loading && !error && listings.length === 0 && <EmptyState />}
       {/* Listings grid */}
       {!loading && !error && listings.length > 0 && (
         <>
@@ -114,48 +98,13 @@ export default function Listings() {
 
           {/* Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="flex justify-center my-6">
-              <div className="flex space-x-1">
-                <button
-                  onClick={() => handlePageChange(pagination.currentPage - 1)}
-                  disabled={!pagination.hasPrevPage}
-                  className={`px-4 py-2 rounded-md ${
-                    pagination.hasPrevPage
-                      ? "bg-white hover:bg-gray-100 text-gray-800 border border-gray-300"
-                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  Previous
-                </button>
-
-                {/* Page numbers */}
-                {Array.from({ length: pagination.totalPages }, (_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => handlePageChange(i)}
-                    className={`px-4 py-2 rounded-md ${
-                      pagination.currentPage === i
-                        ? "bg-blue-600 text-white border border-blue-600"
-                        : "bg-white hover:bg-gray-100 text-gray-800 border border-gray-300"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-
-                <button
-                  onClick={() => handlePageChange(pagination.currentPage + 1)}
-                  disabled={!pagination.hasNextPage}
-                  className={`px-4 py-2 rounded-md ${
-                    pagination.hasNextPage
-                      ? "bg-white hover:bg-gray-100 text-gray-800 border border-gray-300"
-                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  Next
-                </button>
-              </div>
-            </div>
+            <ListingsPagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              hasNextPage={pagination.hasNextPage}
+              hasPrevPage={pagination.hasPrevPage}
+              onPageChange={handlePageChange}
+            />
           )}
         </>
       )}
