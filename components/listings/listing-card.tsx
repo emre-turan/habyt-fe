@@ -8,6 +8,7 @@ import {
 } from "lucide-react"
 
 import type { Listing } from "@/types/listing"
+import { formatShareType } from "@/lib/share-types"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -54,22 +55,6 @@ export function ListingCard({ listing }: ListingCardProps) {
     }).format(amount)
   }
 
-  // Helper function to display share type in a more readable format
-  const formatShareType = (shareType: string) => {
-    switch (shareType) {
-      case "PrivateApartment":
-        return "Private Apartment"
-      case "PrivateRoom":
-        return "Private Room"
-      case "SharedRoom":
-        return "Shared Room"
-      case "Studio":
-        return "Studio"
-      default:
-        return shareType
-    }
-  }
-
   // Safe access to minimumStay information
   const getMinimumStay = () => {
     if (!listing.leaseConditions || !listing.leaseConditions.minimumStay) {
@@ -96,7 +81,7 @@ export function ListingCard({ listing }: ListingCardProps) {
       </div>
 
       <CardHeader>
-        <CardTitle>{listing.shareType}</CardTitle>
+        <CardTitle>{formatShareType(listing.shareType)}</CardTitle>
         <CardDescription>{listing.propertyAddress}</CardDescription>
       </CardHeader>
 
@@ -126,7 +111,9 @@ export function ListingCard({ listing }: ListingCardProps) {
           </div>
           <div className="flex items-center">
             <HomeIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span className="text-muted-foreground mr-1 truncate">Min stay:</span>
+            <span className="text-muted-foreground mr-1 truncate">
+              Min stay:
+            </span>
             <span className="font-medium truncate">{getMinimumStay()}</span>
           </div>
         </div>

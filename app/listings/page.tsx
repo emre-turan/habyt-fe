@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 
 import type { APIResponse, Listing } from "@/types/listing"
-import { Button } from "@/components/ui/button"
 import { FilterBar } from "@/components/filters/filter-bar"
 import { EmptyState } from "@/components/listings/empty-state"
 import { ErrorState } from "@/components/listings/error-state"

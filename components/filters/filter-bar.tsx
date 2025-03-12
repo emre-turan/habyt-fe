@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 
+import { getShareTypeOptions } from "@/lib/share-types"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -27,14 +28,6 @@ import {
 
 import { OptionSelectFilter } from "./option-select-filter"
 
-// Share types based on the API schema
-const shareTypes = [
-  { label: "Private Apartment", value: "PrivateApartment" },
-  { label: "Studio", value: "Studio" },
-  { label: "Private Room", value: "PrivateRoom" },
-  { label: "Shared Room", value: "SharedRoom" },
-]
-
 export function FilterBar() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -55,6 +48,10 @@ export function FilterBar() {
   const [date, setDate] = useState<Date | undefined>(
     bookableOn ? new Date(bookableOn) : undefined
   )
+  const [calendarOpen, setCalendarOpen] = useState(false)
+
+  // Get share type options from utility
+  const shareTypes = getShareTypeOptions()
 
   // Fetch unique cities for dropdown
   const [cities, setCities] = useState<string[]>([])
@@ -88,6 +85,11 @@ export function FilterBar() {
       setBookableOn("")
     }
   }, [date])
+
+  const handleSelectDate = (newDate: Date | undefined) => {
+    setDate(newDate)
+    setCalendarOpen(false)
+  }
 
   const applyFilters = () => {
     const params = new URLSearchParams()
@@ -176,7 +178,7 @@ export function FilterBar() {
             {/* Move-in date filter */}
             <div className="space-y-1 h-10">
               <Label htmlFor="bookableOn">Move-in Date</Label>
-              <Popover>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     id="bookableOn"
@@ -194,7 +196,7 @@ export function FilterBar() {
                   <Calendar
                     mode="single"
                     selected={date}
-                    onSelect={setDate}
+                    onSelect={handleSelectDate}
                     initialFocus
                   />
                 </PopoverContent>
