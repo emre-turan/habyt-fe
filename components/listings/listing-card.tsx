@@ -1,6 +1,23 @@
 import Image from "next/image"
 
-import { Listing } from "@/types/listing"
+import {
+  BedIcon,
+  HomeIcon,
+  RulerIcon,
+  ShowerHeadIcon as ShowerIcon,
+} from "lucide-react"
+
+import type { Listing } from "@/types/listing"
+import { Badge } from "@/components/ui/badge"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 
 interface ListingCardProps {
   listing: Listing
@@ -62,105 +79,85 @@ export function ListingCard({ listing }: ListingCardProps) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <Card className="overflow-hidden hover:shadow-md transition-shadow flex flex-col py-0">
       {/* Image */}
       <div className="relative h-48 w-full">
         <Image
-          src={getMainImage()}
+          src={getMainImage() || "/placeholder.svg"}
           alt={listing.propertyName || "Property"}
           fill
           style={{ objectFit: "cover" }}
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
+        <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
+          {formatShareType(listing.shareType)}
+        </Badge>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        {/* Header */}
-        <div className="mb-2">
-          <div className="flex justify-between items-start">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {listing.propertyName}
-            </h3>
-            <div className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-              {formatShareType(listing.shareType)}
-            </div>
-          </div>
-          <p className="text-gray-600 text-sm">{listing.propertyAddress}</p>
-        </div>
+      <CardHeader>
+        <CardTitle>{listing.shareType}</CardTitle>
+        <CardDescription>{listing.propertyAddress}</CardDescription>
+      </CardHeader>
 
-        {/* Price */}
-        <div className="mb-4">
-          <p className="text-xl font-bold text-blue-600">
-            {formatCurrency(listing.rentNet)}
-            <span className="text-sm text-gray-500 font-normal"> / month</span>
-          </p>
-          {listing.discount > 0 && (
-            <p className="text-sm text-green-600">
-              {formatCurrency(listing.discount)} discount applied
-            </p>
-          )}
-        </div>
+      <CardContent className="space-y-4 flex-grow pb-0">
+        <Separator />
 
         {/* Details */}
-        <div className="grid grid-cols-2 gap-2 text-sm mb-4">
+        <div className="grid grid-cols-2 gap-2 text-sm">
           <div className="flex items-center">
-            <span className="text-gray-600 mr-1">Area:</span>
+            <RulerIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span className="text-muted-foreground mr-1">Area:</span>
             <span className="font-medium">
               {listing.roomArea} {listing.roomAreaUnit}
             </span>
           </div>
           <div className="flex items-center">
-            <span className="text-gray-600 mr-1">Bedrooms:</span>
+            <BedIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span className="text-muted-foreground mr-1">Bedrooms:</span>
             <span className="font-medium">{listing.apartmentBedroomCount}</span>
           </div>
           <div className="flex items-center">
-            <span className="text-gray-600 mr-1">Bathrooms:</span>
+            <ShowerIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span className="text-muted-foreground mr-1">Bathrooms:</span>
             <span className="font-medium">
               {listing.apartmentBathroomCount}
             </span>
           </div>
           <div className="flex items-center">
-            <span className="text-gray-600 mr-1">Min stay:</span>
-            <span className="font-medium">{getMinimumStay()}</span>
+            <HomeIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span className="text-muted-foreground mr-1 truncate">Min stay:</span>
+            <span className="font-medium truncate">{getMinimumStay()}</span>
           </div>
         </div>
-
-        {/* Amenities */}
-        {listing.roomAmenities && listing.roomAmenities.length > 0 && (
-          <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-1">
-              Amenities
-            </h4>
-            <div className="flex flex-wrap gap-1">
-              {listing.roomAmenities.slice(0, 3).map((amenity, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded"
-                >
-                  {amenity}
-                </span>
-              ))}
-              {listing.roomAmenities.length > 3 && (
-                <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                  +{listing.roomAmenities.length - 3} more
-                </span>
+      </CardContent>
+      <CardFooter className="p-0 mt-0">
+        <div className="bg-muted w-full px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <p className="text-sm border rounded-none px-2 py-1">
+              From{" "}
+              {new Date(listing.bookingWindow.bookableFrom).toLocaleDateString(
+                "en-US",
+                {
+                  month: "short",
+                  day: "numeric",
+                }
               )}
-            </div>
+            </p>
           </div>
-        )}
-
-        {/* Availability */}
-        <div className="text-sm text-gray-600">
-          <p>
-            Available from{" "}
-            <span className="font-medium">
-              {new Date(
-                listing.bookingWindow.bookableFrom
-              ).toLocaleDateString()}
+          <div className="text-right">
+            {listing.discount > 0 && (
+              <span className="text-muted-foreground line-through mr-2 text-sm">
+                {formatCurrency(listing.rentGross)}
+              </span>
+            )}
+            <span className="text-lg font-bold text-secondary">
+              {formatCurrency(listing.rentNet)}
             </span>
-          </p>
+            <p className="text-sm text-muted-foreground -mt-1">monthly</p>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   )
 }
