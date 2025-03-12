@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 
+import { Listing } from "@/types/listing"
 import { getShareTypeOptions } from "@/lib/share-types"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -65,7 +66,7 @@ export function FilterBar() {
 
         // Extract unique cities
         const uniqueCities = Array.from(
-          new Set(data.data.map((listing: any) => listing.city))
+          new Set(data.data.map((listing: Listing) => listing.city))
         ).sort()
 
         setCities(uniqueCities as string[])

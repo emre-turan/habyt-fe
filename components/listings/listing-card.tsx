@@ -8,7 +8,9 @@ import {
 } from "lucide-react"
 
 import type { Listing } from "@/types/listing"
+import { geistMono } from "@/lib/fonts"
 import { formatShareType } from "@/lib/share-types"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -75,42 +77,51 @@ export function ListingCard({ listing }: ListingCardProps) {
           priority
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
+        <Badge
+          className={cn(
+            geistMono.className,
+            "absolute top-2 right-2 bg-primary text-primary-foreground uppercase font-normal"
+          )}
+        >
           {formatShareType(listing.shareType)}
         </Badge>
       </div>
 
       <CardHeader>
-        <CardTitle>{formatShareType(listing.shareType)}</CardTitle>
-        <CardDescription>{listing.propertyAddress}</CardDescription>
+        <CardTitle className="font-bold">
+          {formatShareType(listing.shareType)}
+        </CardTitle>
+        <CardDescription className="font-light">
+          {listing.propertyAddress}
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4 flex-grow pb-0">
         <Separator />
 
         {/* Details */}
-        <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="grid grid-cols-2 gap-2 text-xs lg:text-sm">
           <div className="flex items-center">
-            <RulerIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <RulerIcon className="size-4 mr-2 text-muted-foreground" />
             <span className="text-muted-foreground mr-1">Area:</span>
             <span className="font-medium">
               {listing.roomArea} {listing.roomAreaUnit}
             </span>
           </div>
           <div className="flex items-center">
-            <BedIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <BedIcon className="size-4 mr-2 text-muted-foreground" />
             <span className="text-muted-foreground mr-1">Bedrooms:</span>
             <span className="font-medium">{listing.apartmentBedroomCount}</span>
           </div>
           <div className="flex items-center">
-            <ShowerIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <ShowerIcon className="size-4 mr-2 text-muted-foreground" />
             <span className="text-muted-foreground mr-1">Bathrooms:</span>
             <span className="font-medium">
               {listing.apartmentBathroomCount}
             </span>
           </div>
           <div className="flex items-center">
-            <HomeIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <HomeIcon className="size-4 mr-2 text-muted-foreground" />
             <span className="text-muted-foreground mr-1 truncate">
               Min stay:
             </span>
@@ -141,7 +152,7 @@ export function ListingCard({ listing }: ListingCardProps) {
             <span className="text-lg font-bold text-secondary">
               {formatCurrency(listing.rentNet)}
             </span>
-            <p className="text-sm text-muted-foreground -mt-1">monthly</p>
+            <p className="text-xs text-muted-foreground -mt-1">monthly</p>
           </div>
         </div>
       </CardFooter>
