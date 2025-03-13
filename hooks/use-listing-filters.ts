@@ -60,6 +60,13 @@ export function useListingsFilters() {
   )
   const [calendarOpen, setCalendarOpen] = useState(false)
 
+  const [bedroomsFrom, setBedroomsFrom] = useState<string>(
+    searchParams.get("bedroomsFrom") || ""
+  )
+  const [bedroomsTo, setBedroomsTo] = useState<string>(
+    searchParams.get("bedroomsTo") || ""
+  )
+
   // Update bookableOn when date changes
   useEffect(() => {
     if (date) {
@@ -91,6 +98,8 @@ export function useListingsFilters() {
     if (rentFrom) params.append("rentFrom", rentFrom)
     if (rentTo) params.append("rentTo", rentTo)
     if (bookableOn) params.append("bookableOn", bookableOn)
+    if (bedroomsFrom) params.append("bedroomsFrom", bedroomsFrom)
+    if (bedroomsTo) params.append("bedroomsTo", bedroomsTo)
 
     // Add all selected share types
     selectedShareTypes.forEach((type) => {
@@ -109,6 +118,8 @@ export function useListingsFilters() {
     setRentTo("")
     setSelectedShareTypes([])
     setBookableOn("")
+    setBedroomsFrom("")
+    setBedroomsTo("")
     setDate(undefined)
     router.push("/listings")
   }
@@ -122,6 +133,8 @@ export function useListingsFilters() {
       bookableOn,
       date,
       calendarOpen,
+      bedroomsFrom,
+      bedroomsTo,
     },
     setters: {
       setCity,
@@ -131,6 +144,8 @@ export function useListingsFilters() {
       setBookableOn,
       setDate,
       setCalendarOpen,
+      setBedroomsFrom,
+      setBedroomsTo,
     },
     actions: {
       handleSelectDate,

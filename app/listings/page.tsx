@@ -38,7 +38,6 @@ export default function Listings() {
 
   return (
     <Container className="py-4">
-      <h1 className="text-3xl font-bold mb-6">Available Listings</h1>
       {/* Filter section */}
       <FilterBar />
       {/* Loading state */}

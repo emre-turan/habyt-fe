@@ -27,22 +27,32 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Loading } from "@/components/shared/loading"
 
+import { HelpTooltip } from "../shared/help-tooltip"
 import { OptionSelectFilter } from "./option-select-filter"
 
 export function FilterBar() {
-  // Use the custom hook for filter state management
   const { filters, setters, actions } = useListingsFilters()
   const { data: cities = [], isLoading: citiesLoading } = useCitiesQuery()
 
   // Destructure values from the hook
-  const { city, rentFrom, rentTo, selectedShareTypes, date, calendarOpen } =
-    filters
+  const {
+    city,
+    rentFrom,
+    rentTo,
+    selectedShareTypes,
+    date,
+    calendarOpen,
+    bedroomsFrom,
+    bedroomsTo,
+  } = filters
   const {
     setCity,
     setRentFrom,
     setRentTo,
     setCalendarOpen,
     setSelectedShareTypes,
+    setBedroomsFrom,
+    setBedroomsTo,
   } = setters
   const { handleSelectDate, applyFilters, resetFilters } = actions
 
@@ -56,7 +66,7 @@ export function FilterBar() {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {/* City filter */}
             <div className="space-y-1 h-10">
               <Label htmlFor="city">City</Label>
@@ -96,7 +106,10 @@ export function FilterBar() {
 
             {/* Price range filter */}
             <div className="space-y-1 h-10">
-              <Label>Monthly Rent</Label>
+              <div className="flex items-center space-x-1 ">
+                <Label>Monthly Rent</Label>
+                <HelpTooltip>Filter by monthly rent amount</HelpTooltip>
+              </div>
               <div className="flex items-center space-x-2">
                 <Input
                   type="number"
@@ -112,6 +125,32 @@ export function FilterBar() {
                   placeholder="Max"
                   value={rentTo}
                   onChange={(e) => setRentTo(e.target.value)}
+                />
+              </div>
+            </div>
+            {/* Bedroom count range filter */}
+            <div className="space-y-1 h-10">
+              <div className="flex items-center space-x-1">
+                <Label>Bedrooms</Label>
+                <HelpTooltip>
+                  Filter by number of bedrooms in the property
+                </HelpTooltip>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="number"
+                  id="bedroomsFrom"
+                  placeholder="Min"
+                  value={bedroomsFrom}
+                  onChange={(e) => setBedroomsFrom(e.target.value)}
+                />
+                <span>-</span>
+                <Input
+                  type="number"
+                  id="bedroomsTo"
+                  placeholder="Max"
+                  value={bedroomsTo}
+                  onChange={(e) => setBedroomsTo(e.target.value)}
                 />
               </div>
             </div>
