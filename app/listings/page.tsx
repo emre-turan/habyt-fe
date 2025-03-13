@@ -1,9 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
-import type { APIResponse, Listing } from "@/types/listing"
+import { useListingsQuery } from "@/hooks/use-listings-query"
 import { Container } from "@/components/ui/container"
 import { FilterBar } from "@/components/filters/filter-bar"
 import { EmptyState } from "@/components/listings/empty-state"
@@ -13,49 +12,19 @@ import { LoadingState } from "@/components/listings/loading-state"
 import { ListingsPagination } from "@/components/listings/pagination"
 
 export default function Listings() {
+  const router = useRouter()
   const searchParams = useSearchParams()
-  const [listings, setListings] = useState<Listing[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [pagination, setPagination] = useState({
+  const queryString = searchParams.toString()
+  const { data, isLoading, isError, error } = useListingsQuery(queryString)
+
+  // Extract listings and pagination data
+  const listings = data?.data || []
+  const pagination = data?.metadata.pagination || {
     currentPage: 0,
     totalPages: 0,
     hasNextPage: false,
     hasPrevPage: false,
-  })
-
-  useEffect(() => {
-    async function fetchListings() {
-      setLoading(true)
-      try {
-        // Create URL with search parameters
-        const queryString = searchParams.toString()
-        const response = await fetch(
-          `/api/listings${queryString ? `?${queryString}` : ""}`
-        )
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch listings")
-        }
-
-        const data: APIResponse = await response.json()
-        setListings(data.data)
-        setPagination({
-          currentPage: data.metadata.pagination.currentPage,
-          totalPages: data.metadata.pagination.totalPages,
-          hasNextPage: data.metadata.pagination.hasNextPage,
-          hasPrevPage: data.metadata.pagination.hasPrevPage,
-        })
-      } catch (err) {
-        setError("Error loading listings. Please try again later.")
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchListings()
-  }, [searchParams])
+  }
 
   const handlePageChange = (page: number) => {
     // Create a new URLSearchParams object from the current one
@@ -63,16 +32,8 @@ export default function Listings() {
     // Update or add the page parameter
     params.set("page", page.toString())
 
-    // Update the URL without reloading the page
-    window.history.pushState(
-      {},
-      "",
-      `${window.location.pathname}?${params.toString()}`
-    )
-
-    // Manually trigger a new fetch since we're not using Next.js router to navigate
-    const event = new Event("popstate")
-    window.dispatchEvent(event)
+    // Use the router to update the URL
+    router.push(`/listings?${params.toString()}`)
   }
 
   return (
@@ -81,14 +42,20 @@ export default function Listings() {
       {/* Filter section */}
       <FilterBar />
       {/* Loading state */}
-      {loading && <LoadingState />}
+      {isLoading && <LoadingState />}
       {/* Error state */}
-      {error && !loading && <ErrorState message={error} />}
+      {isError && !isLoading && (
+        <ErrorState
+          message={
+            error?.message || "Error loading listings. Please try again later."
+          }
+        />
+      )}
 
       {/* Empty state */}
-      {!loading && !error && listings.length === 0 && <EmptyState />}
+      {!isLoading && !isError && listings.length === 0 && <EmptyState />}
       {/* Listings grid */}
-      {!loading && !error && listings.length > 0 && (
+      {!isLoading && !isError && listings.length > 0 && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {listings.map((listing) => (

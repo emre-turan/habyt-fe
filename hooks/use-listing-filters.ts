@@ -87,7 +87,7 @@ export function useListingsFilters() {
   const applyFilters = () => {
     const params = new URLSearchParams()
 
-    if (city) params.append("city", city)
+    if (city && city !== "all") params.append("city", city)
     if (rentFrom) params.append("rentFrom", rentFrom)
     if (rentTo) params.append("rentTo", rentTo)
     if (bookableOn) params.append("bookableOn", bookableOn)
