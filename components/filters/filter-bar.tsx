@@ -5,7 +5,7 @@ import { CalendarIcon } from "lucide-react"
 
 import { getShareTypeOptions } from "@/lib/share-types"
 import { cn } from "@/lib/utils"
-import { useCitiesQuery } from "@/hooks/use-cities-query"
+import { useCitiesQuery } from "@/hooks/queries/use-cities-query"
 import { useListingsFilters } from "@/hooks/use-listing-filters"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"

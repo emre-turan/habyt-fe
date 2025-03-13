@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 
-import { useListingsQuery } from "@/hooks/use-listings-query"
+import { useListingsQuery } from "@/hooks/queries/use-listings-query"
 import { Container } from "@/components/ui/container"
 import { FilterBar } from "@/components/filters/filter-bar"
 import { EmptyState } from "@/components/listings/empty-state"
