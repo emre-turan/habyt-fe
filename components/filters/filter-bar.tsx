@@ -1,13 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
-
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 
-import { Listing } from "@/types/listing"
 import { getShareTypeOptions } from "@/lib/share-types"
 import { cn } from "@/lib/utils"
+import { useCitiesQuery } from "@/hooks/use-cities-query"
 import { useListingsFilters } from "@/hooks/use-listing-filters"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -26,12 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Loading } from "@/components/shared/loading"
 
 import { OptionSelectFilter } from "./option-select-filter"
 
 export function FilterBar() {
   // Use the custom hook for filter state management
   const { filters, setters, actions } = useListingsFilters()
+  const { data: cities = [], isLoading: citiesLoading } = useCitiesQuery()
 
   // Destructure values from the hook
   const { city, rentFrom, rentTo, selectedShareTypes, date, calendarOpen } =
@@ -48,30 +49,6 @@ export function FilterBar() {
   // Get share type options from utility
   const shareTypes = getShareTypeOptions()
 
-  // Fetch unique cities for dropdown
-  const [cities, setCities] = useState<string[]>([])
-
-  useEffect(() => {
-    async function fetchCities() {
-      try {
-        const response = await fetch("/api/listings")
-        if (!response.ok) throw new Error("Failed to fetch listings")
-        const data = await response.json()
-
-        // Extract unique cities
-        const uniqueCities = Array.from(
-          new Set(data.data.map((listing: Listing) => listing.city))
-        ).sort()
-
-        setCities(uniqueCities as string[])
-      } catch (error) {
-        console.error("Error fetching cities:", error)
-      }
-    }
-
-    fetchCities()
-  }, [])
-
   return (
     <Card className="mb-8">
       <CardHeader>
@@ -85,15 +62,24 @@ export function FilterBar() {
               <Label htmlFor="city">City</Label>
               <Select value={city} onValueChange={setCity}>
                 <SelectTrigger className="w-full" id="city">
-                  <SelectValue placeholder="All Cities" />
+                  <div className="flex items-center justify-between w-full">
+                    <SelectValue placeholder="All Cities" />
+                    {citiesLoading && <Loading />}
+                  </div>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Cities</SelectItem>
-                  {cities.map((cityName) => (
-                    <SelectItem key={cityName} value={cityName}>
-                      {cityName}
-                    </SelectItem>
-                  ))}
+                  {citiesLoading
+                    ? Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="px-2 py-1.5">
+                          <Skeleton className="h-4 w-20" />
+                        </div>
+                      ))
+                    : cities.map((cityName) => (
+                        <SelectItem key={cityName} value={cityName}>
+                          {cityName}
+                        </SelectItem>
+                      ))}
                 </SelectContent>
               </Select>
             </div>
