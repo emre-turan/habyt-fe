@@ -14,6 +14,12 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -28,12 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Loading } from "@/components/shared/loading"
 
@@ -275,14 +275,14 @@ export function FilterBar() {
         </CardContent>
       </Card>
 
-      {/* Mobile filter button and sheet */}
+      {/* Mobile filter button and drawer */}
       <div className="md:hidden mb-4">
-        <Sheet>
+        <Drawer>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Listings</h2>
-            <SheetTrigger asChild>
+            <DrawerTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4" />
+                <SlidersHorizontal className="size-4" />
                 Filters
                 {activeFilterCount > 0 && (
                   <Badge variant="secondary" className="ml-1">
@@ -290,18 +290,18 @@ export function FilterBar() {
                   </Badge>
                 )}
               </Button>
-            </SheetTrigger>
+            </DrawerTrigger>
           </div>
-          <SheetContent side="bottom" className=" p-6">
-            <div className="h-full overflow-y-auto pb-16">
-              <SheetTitle className="text-lg font-semibold mb-4 flex items-center">
-                <FilterIcon className="mr-2 size-5 text-primary" />
+          <DrawerContent className="max-h-[85vh] overflow-y-auto pb-6 px-6">
+            <div className="mt-6">
+              <DrawerTitle className="text-lg font-semibold mb-6 flex items-center">
+                <FilterIcon className="mr-2 size-5" />
                 Filter Options
-              </SheetTitle>
+              </DrawerTitle>
               <FilterContent />
             </div>
-          </SheetContent>
-        </Sheet>
+          </DrawerContent>
+        </Drawer>
       </div>
     </>
   )
