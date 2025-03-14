@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import Image from "next/image"
 
 import type { Listing } from "@/types/listing"
@@ -28,17 +31,27 @@ export function ListingImage({
   className,
   alt,
 }: ListingImageProps) {
-  const imageUrl = getMainImage(listing)
+  const [imgSrc, setImgSrc] = useState<string>(getMainImage(listing))
+  const [imgError, setImgError] = useState<boolean>(false)
+
+  // Handle image loading error
+  const handleImageError = () => {
+    if (!imgError) {
+      setImgSrc("/placeholder-image.svg")
+      setImgError(true)
+    }
+  }
 
   return (
     <div className={cn("relative w-full", height, className)}>
       <Image
-        src={imageUrl || "/placeholder.svg"}
+        src={imgSrc || "/placeholder.svg"}
         alt={alt || listing.propertyName || "Property"}
         fill
         style={{ objectFit: "cover" }}
         priority={priority}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        onError={handleImageError}
       />
       {showBadge && (
         <Badge
