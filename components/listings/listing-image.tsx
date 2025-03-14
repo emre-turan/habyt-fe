@@ -33,6 +33,7 @@ export function ListingImage({
 }: ListingImageProps) {
   const [imgSrc, setImgSrc] = useState<string>(getMainImage(listing))
   const [imgError, setImgError] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   // Handle image loading error
   const handleImageError = () => {
@@ -42,16 +43,29 @@ export function ListingImage({
     }
   }
 
+  const handleImageLoad = () => {
+    setIsLoading(false)
+  }
+
   return (
     <div className={cn("relative w-full", height, className)}>
+      {/* Loading placeholder */}
+      {isLoading && <div className="absolute inset-0 bg-muted animate-pulse" />}
       <Image
         src={imgSrc || "/placeholder.svg"}
         alt={alt || listing.propertyName || "Property"}
         fill
-        style={{ objectFit: "cover" }}
+        style={{
+          objectFit: "cover",
+          opacity: isLoading ? 0 : 1,
+          transition: "opacity 0.2s ease-in-out",
+        }}
         priority={priority}
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        loading={priority ? "eager" : "lazy"}
+        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         onError={handleImageError}
+        onLoad={handleImageLoad}
+        quality={80}
       />
       {showBadge && (
         <Badge

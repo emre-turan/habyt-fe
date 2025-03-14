@@ -25,14 +25,16 @@ import { ListingImage } from "./listing-image"
 
 interface ListingCardProps {
   listing: Listing
+  index?: number
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
+export function ListingCard({ listing, index = 0 }: ListingCardProps) {
+  const isPriority = index < 6
   return (
     <Link href={`/listings/${listing.referenceId}`} className="block">
       <Card className="overflow-hidden hover:shadow-md flex flex-col py-0 border-accent hover:border-primary transition-all duration-200">
         {/* Image */}
-        <ListingImage listing={listing} priority />
+        <ListingImage listing={listing} priority={isPriority} />
 
         <CardHeader>
           <CardTitle className="font-bold">

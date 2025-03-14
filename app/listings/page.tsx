@@ -50,8 +50,8 @@ const createPaginationParams = (
 // Component for displaying the grid of listings
 const ListingsGrid = ({ listings }: ListingsGridProps) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-    {listings.map((listing) => (
-      <ListingCard key={listing.referenceId} listing={listing} />
+    {listings.map((listing, index) => (
+      <ListingCard key={listing.referenceId} listing={listing} index={index} />
     ))}
   </div>
 )
