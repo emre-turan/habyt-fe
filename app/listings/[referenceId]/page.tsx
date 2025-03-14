@@ -3,6 +3,7 @@ import path from "path"
 import { notFound } from "next/navigation"
 
 import type { APIResponse, Listing } from "@/types/listing"
+import { getMainImage } from "@/lib/listing-images"
 import { Container } from "@/components/ui/container"
 import { ListingDetail } from "@/components/listings/listing-details/listing-detail"
 
@@ -26,6 +27,24 @@ async function getListingByReferenceId(
   }
 }
 
+/**
+ * Get the English description from a listing's room descriptions
+ * @param listing - The listing object
+ * @returns The English description or a fallback message
+ */
+function getEnglishDescription(listing: Listing): string {
+  const englishDesc = listing.roomDescriptions?.find(
+    (desc) => desc.language === "EN"
+  )?.description
+
+  if (englishDesc) return englishDesc
+
+  return `${listing.shareType} in ${listing.city} available for rent.`
+}
+
+/**
+ * Generate metadata for the listing page
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -35,6 +54,7 @@ export async function generateMetadata({
   const resolvedParams = await params
   const listing = await getListingByReferenceId(resolvedParams.referenceId)
 
+  // Return default metadata if listing not found
   if (!listing) {
     return {
       title: "Listing Not Found | Habyt",
@@ -42,18 +62,12 @@ export async function generateMetadata({
     }
   }
 
+  // Generate metadata from the listing
   return {
     title: `${listing.propertyName} in ${listing.city} | Habyt`,
-    description:
-      listing.roomDescriptions?.find((desc) => desc.language === "EN")
-        ?.description ||
-      `${listing.shareType} in ${listing.city} available for rent.`,
+    description: getEnglishDescription(listing),
     openGraph: {
-      images: [
-        listing.propertyImages?.[0]?.url ||
-          listing.apartmentImages?.[0]?.url ||
-          "",
-      ],
+      images: [getMainImage(listing)],
     },
   }
 }
