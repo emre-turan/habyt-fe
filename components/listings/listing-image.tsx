@@ -21,7 +21,7 @@ interface ListingImageProps {
 
 /**
  * A reusable component for displaying listing images with consistent styling and behavior.
- * Handles image selection logic and displays a badge with the share type if requested.
+ * Implements proper lazy loading and placeholder strategies for optimal performance.
  */
 export function ListingImage({
   listing,
@@ -48,11 +48,11 @@ export function ListingImage({
   }
 
   return (
-    <div className={cn("relative w-full", height, className)}>
+    <div className={cn("relative w-full overflow-hidden", height, className)}>
       {/* Loading placeholder */}
       {isLoading && <div className="absolute inset-0 bg-muted animate-pulse" />}
       <Image
-        src={imgSrc || "/placeholder.svg"}
+        src={imgSrc || "/placeholder-image.svg"}
         alt={alt || listing.propertyName || "Property"}
         fill
         style={{
