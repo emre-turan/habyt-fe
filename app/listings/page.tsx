@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 
+import type { Listing } from "@/types/listing"
 import { useListingsQuery } from "@/hooks/queries/use-listings-query"
 import { Container } from "@/components/ui/container"
 import { FilterBar } from "@/components/filters/filter-bar"
@@ -11,13 +12,117 @@ import { ListingCard } from "@/components/listings/listing-card"
 import { LoadingState } from "@/components/listings/loading-state"
 import { ListingsPagination } from "@/components/listings/pagination"
 
+interface PaginationData {
+  currentPage: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+interface ListingsGridProps {
+  listings: Listing[]
+}
+
+interface PaginationSectionProps {
+  pagination: PaginationData
+  onPageChange: (page: number) => void
+}
+
+interface ListingsContentProps {
+  listings: Listing[]
+  pagination: PaginationData
+  isLoading: boolean
+  isError: boolean
+  error: Error | null
+  onPageChange: (page: number) => void
+}
+
+// Helper function to create pagination params
+const createPaginationParams = (
+  searchParams: URLSearchParams,
+  page: number
+): string => {
+  const params = new URLSearchParams(searchParams)
+  params.set("page", page.toString())
+  return params.toString()
+}
+
+// Component for displaying the grid of listings
+const ListingsGrid = ({ listings }: ListingsGridProps) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    {listings.map((listing) => (
+      <ListingCard key={listing.referenceId} listing={listing} />
+    ))}
+  </div>
+)
+
+// Component for pagination section
+const PaginationSection = ({
+  pagination,
+  onPageChange,
+}: PaginationSectionProps) => {
+  if (pagination.totalPages <= 1) return null
+
+  return (
+    <ListingsPagination
+      currentPage={pagination.currentPage}
+      totalPages={pagination.totalPages}
+      hasNextPage={pagination.hasNextPage}
+      hasPrevPage={pagination.hasPrevPage}
+      onPageChange={onPageChange}
+    />
+  )
+}
+
+// Component for the main content area with conditional rendering
+const ListingsContent = ({
+  listings,
+  pagination,
+  isLoading,
+  isError,
+  error,
+  onPageChange,
+}: ListingsContentProps) => {
+  // Show loading state
+  if (isLoading) {
+    return <LoadingState />
+  }
+
+  // Show error state
+  if (isError) {
+    return (
+      <ErrorState
+        message={
+          error?.message || "Error loading listings. Please try again later."
+        }
+      />
+    )
+  }
+
+  // Show empty state
+  if (listings.length === 0) {
+    return <EmptyState />
+  }
+
+  // Show listings and pagination
+  return (
+    <>
+      <ListingsGrid listings={listings} />
+      <PaginationSection pagination={pagination} onPageChange={onPageChange} />
+    </>
+  )
+}
+
+// Main page component
 export default function Listings() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const queryString = searchParams.toString()
+
+  // Fetch listings data
   const { data, isLoading, isError, error } = useListingsQuery(queryString)
 
-  // Extract listings and pagination data
+  // Extract listings and pagination data with defaults
   const listings = data?.data || []
   const pagination = data?.metadata.pagination || {
     currentPage: 0,
@@ -26,54 +131,26 @@ export default function Listings() {
     hasPrevPage: false,
   }
 
+  // Handle page change
   const handlePageChange = (page: number) => {
-    // Create a new URLSearchParams object from the current one
-    const params = new URLSearchParams(searchParams)
-    // Update or add the page parameter
-    params.set("page", page.toString())
-
-    // Use the router to update the URL
-    router.push(`/listings?${params.toString()}`)
+    const newQueryString = createPaginationParams(searchParams, page)
+    router.push(`/listings?${newQueryString}`)
   }
 
   return (
     <Container className="py-4">
       {/* Filter section */}
       <FilterBar />
-      {/* Loading state */}
-      {isLoading && <LoadingState />}
-      {/* Error state */}
-      {isError && !isLoading && (
-        <ErrorState
-          message={
-            error?.message || "Error loading listings. Please try again later."
-          }
-        />
-      )}
 
-      {/* Empty state */}
-      {!isLoading && !isError && listings.length === 0 && <EmptyState />}
-      {/* Listings grid */}
-      {!isLoading && !isError && listings.length > 0 && (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {listings.map((listing) => (
-              <ListingCard key={listing.referenceId} listing={listing} />
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {pagination.totalPages > 1 && (
-            <ListingsPagination
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-              hasNextPage={pagination.hasNextPage}
-              hasPrevPage={pagination.hasPrevPage}
-              onPageChange={handlePageChange}
-            />
-          )}
-        </>
-      )}
+      {/* Main content with conditional rendering */}
+      <ListingsContent
+        listings={listings}
+        pagination={pagination}
+        isLoading={isLoading}
+        isError={isError}
+        error={error as Error | null}
+        onPageChange={handlePageChange}
+      />
     </Container>
   )
 }
