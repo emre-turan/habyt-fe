@@ -8,7 +8,7 @@ import type { Listing } from "@/types/listing"
  * Fetches all listings and extracts unique cities
  */
 async function fetchCities(): Promise<string[]> {
-  const response = await fetch("/api/listings")
+  const response = await fetch("/api/listings?pageSize=1000")
 
   if (!response.ok) {
     throw new Error("Failed to fetch cities")

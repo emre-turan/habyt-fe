@@ -6,7 +6,10 @@ import { CalendarIcon } from "lucide-react"
 import { getShareTypeOptions } from "@/lib/share-types"
 import { cn } from "@/lib/utils"
 import { useCitiesQuery } from "@/hooks/queries/use-cities-query"
+import { useListingsQuery } from "@/hooks/queries/use-listings-query"
+import { useDynamicFilterOptions } from "@/hooks/use-dynamic-filter-options"
 import { useListingsFilters } from "@/hooks/use-listing-filters"
+import { usePreviewQueryString } from "@/hooks/use-preview-query-string"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -34,6 +37,17 @@ export function FilterBar() {
   const { filters, setters, actions } = useListingsFilters()
   const { data: cities = [], isLoading: citiesLoading } = useCitiesQuery()
 
+  // Get preview query string from the dedicated hook
+  const getPreviewQueryString = usePreviewQueryString(filters)
+  const previewQueryString = getPreviewQueryString()
+
+  // Get preview data for dynamic filter options
+  const { data: previewData } = useListingsQuery(previewQueryString)
+  const previewListings = previewData?.data || []
+
+  // Use preview listings for dynamic filter options
+  const dynamicOptions = useDynamicFilterOptions(previewListings)
+
   // Destructure values from the hook
   const {
     city,
@@ -56,8 +70,11 @@ export function FilterBar() {
   } = setters
   const { handleSelectDate, applyFilters, resetFilters } = actions
 
-  // Get share type options from utility
-  const shareTypes = getShareTypeOptions()
+  // Get share type options from dynamic options or fallback to utility
+  const shareTypes =
+    dynamicOptions.shareTypes.length > 0
+      ? dynamicOptions.shareTypes
+      : getShareTypeOptions()
 
   return (
     <Card className="mb-8">
@@ -114,7 +131,7 @@ export function FilterBar() {
                 <Input
                   type="number"
                   id="rentFrom"
-                  placeholder="Min"
+                  placeholder={`Min (${dynamicOptions.rentRange.min})`}
                   value={rentFrom}
                   onChange={(e) => setRentFrom(e.target.value)}
                 />
@@ -122,7 +139,7 @@ export function FilterBar() {
                 <Input
                   type="number"
                   id="rentTo"
-                  placeholder="Max"
+                  placeholder={`Max (${dynamicOptions.rentRange.max})`}
                   value={rentTo}
                   onChange={(e) => setRentTo(e.target.value)}
                 />
@@ -140,7 +157,7 @@ export function FilterBar() {
                 <Input
                   type="number"
                   id="bedroomsFrom"
-                  placeholder="Min"
+                  placeholder={`Min (${dynamicOptions.bedroomsRange.min})`}
                   value={bedroomsFrom}
                   onChange={(e) => setBedroomsFrom(e.target.value)}
                 />
@@ -148,7 +165,7 @@ export function FilterBar() {
                 <Input
                   type="number"
                   id="bedroomsTo"
-                  placeholder="Max"
+                  placeholder={`Max (${dynamicOptions.bedroomsRange.max})`}
                   value={bedroomsTo}
                   onChange={(e) => setBedroomsTo(e.target.value)}
                 />
