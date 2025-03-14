@@ -39,7 +39,7 @@ export function HelpTooltip({ children, className }: HelpTooltipProps) {
           />
         </TooltipTrigger>
         <TooltipContent side="top" align="center">
-          <div className="max-w-xs text-sm">{children}</div>
+          <div className="max-w-xs text-xs">{children}</div>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

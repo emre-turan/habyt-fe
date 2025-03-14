@@ -125,13 +125,17 @@ export function FilterBar() {
             <div className="space-y-1 h-10">
               <div className="flex items-center space-x-1 ">
                 <Label>Monthly Rent</Label>
-                <HelpTooltip>Filter by monthly rent amount</HelpTooltip>
+                <HelpTooltip>
+                  Filter by monthly rent amount (Range:{" "}
+                  {dynamicOptions.rentRange.min} -{" "}
+                  {dynamicOptions.rentRange.max})
+                </HelpTooltip>
               </div>
               <div className="flex items-center space-x-2">
                 <Input
                   type="number"
                   id="rentFrom"
-                  placeholder={`Min (${dynamicOptions.rentRange.min})`}
+                  placeholder="Min"
                   value={rentFrom}
                   onChange={(e) => setRentFrom(e.target.value)}
                 />
@@ -139,25 +143,28 @@ export function FilterBar() {
                 <Input
                   type="number"
                   id="rentTo"
-                  placeholder={`Max (${dynamicOptions.rentRange.max})`}
+                  placeholder="Max"
                   value={rentTo}
                   onChange={(e) => setRentTo(e.target.value)}
                 />
               </div>
             </div>
+
             {/* Bedroom count range filter */}
             <div className="space-y-1 h-10">
               <div className="flex items-center space-x-1">
                 <Label>Bedrooms</Label>
                 <HelpTooltip>
-                  Filter by number of bedrooms in the property
+                  Filter by number of bedrooms (Range:{" "}
+                  {dynamicOptions.bedroomsRange.min} -{" "}
+                  {dynamicOptions.bedroomsRange.max})
                 </HelpTooltip>
               </div>
               <div className="flex items-center space-x-2">
                 <Input
                   type="number"
                   id="bedroomsFrom"
-                  placeholder={`Min (${dynamicOptions.bedroomsRange.min})`}
+                  placeholder="Min"
                   value={bedroomsFrom}
                   onChange={(e) => setBedroomsFrom(e.target.value)}
                 />
@@ -165,7 +172,7 @@ export function FilterBar() {
                 <Input
                   type="number"
                   id="bedroomsTo"
-                  placeholder={`Max (${dynamicOptions.bedroomsRange.max})`}
+                  placeholder="Max"
                   value={bedroomsTo}
                   onChange={(e) => setBedroomsTo(e.target.value)}
                 />
