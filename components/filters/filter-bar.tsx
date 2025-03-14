@@ -103,7 +103,7 @@ export function FilterBar() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
         {/* City filter */}
-        <div className="space-y-2">
+        <div className="space-y-2 h-14">
           <Label htmlFor="city" className="text-sm font-medium">
             City
           </Label>
@@ -135,7 +135,7 @@ export function FilterBar() {
         </div>
 
         {/* Property type filter */}
-        <div className="space-y-2">
+        <div className="space-y-2 h-14">
           <Label className="text-sm font-medium">Type of Stay</Label>
           <OptionSelectFilter
             options={shareTypes}
@@ -145,7 +145,7 @@ export function FilterBar() {
         </div>
 
         {/* Price range filter */}
-        <div className="space-y-2">
+        <div className="space-y-2 h-14">
           <div className="flex items-center space-x-1">
             <Label className="text-sm font-medium">Monthly Rent</Label>
             <HelpTooltip>
@@ -175,7 +175,7 @@ export function FilterBar() {
         </div>
 
         {/* Bedroom count range filter */}
-        <div className="space-y-2">
+        <div className="space-y-2 h-14">
           <div className="flex items-center space-x-1">
             <Label className="text-sm font-medium">Bedrooms</Label>
             <HelpTooltip>
@@ -206,7 +206,7 @@ export function FilterBar() {
         </div>
 
         {/* Move-in date filter */}
-        <div className="space-y-2">
+        <div className="space-y-2 h-14">
           <Label htmlFor="bookableOn" className="text-sm font-medium">
             Move-in Date
           </Label>
@@ -237,17 +237,12 @@ export function FilterBar() {
       </div>
 
       {/* Action buttons */}
-      <div className="flex justify-end space-x-2 pt-2">
+      <div className="flex justify-end space-x-2 pt-4">
         <Button variant="outline" onClick={resetFilters}>
           <X className="mr-2 size-4" />
           Reset
         </Button>
-        <Button
-          onClick={applyFilters}
-          className="bg-primary hover:bg-primary/90 transition-colors"
-        >
-          Apply Filters
-        </Button>
+        <Button onClick={applyFilters}>Apply Filters</Button>
       </div>
     </div>
   )
