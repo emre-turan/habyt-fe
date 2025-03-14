@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
  * @param {string} date - The date string to format
  * @returns {string} The formatted date string in "Month Day, Year" format
  */
-export const formatAvailableDate = (date: string) => {
+export const formatAvailableDate = (date: string): string => {
   return new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
