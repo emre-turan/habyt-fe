@@ -13,6 +13,7 @@ interface ListingImageProps {
   showBadge?: boolean
   height?: string
   className?: string
+  alt?: string
 }
 
 /**
@@ -25,6 +26,7 @@ export function ListingImage({
   showBadge = true,
   height = "h-48",
   className,
+  alt,
 }: ListingImageProps) {
   const imageUrl = getMainImage(listing)
 
@@ -32,7 +34,7 @@ export function ListingImage({
     <div className={cn("relative w-full", height, className)}>
       <Image
         src={imageUrl || "/placeholder.svg"}
-        alt={listing.propertyName || "Property"}
+        alt={alt || listing.propertyName || "Property"}
         fill
         style={{ objectFit: "cover" }}
         priority={priority}
