@@ -29,9 +29,11 @@ async function getListingByReferenceId(
 export async function generateMetadata({
   params,
 }: {
-  params: { referenceId: string }
+  params: Promise<{ referenceId: string }>
 }) {
-  const listing = await getListingByReferenceId(params.referenceId)
+  // Await the params object before accessing its properties
+  const resolvedParams = await params
+  const listing = await getListingByReferenceId(resolvedParams.referenceId)
 
   if (!listing) {
     return {
@@ -59,9 +61,10 @@ export async function generateMetadata({
 export default async function ListingPage({
   params,
 }: {
-  params: { referenceId: string }
+  params: Promise<{ referenceId: string }>
 }) {
-  const listing = await getListingByReferenceId(params.referenceId)
+  const resolvedParams = await params
+  const listing = await getListingByReferenceId(resolvedParams.referenceId)
 
   if (!listing) {
     notFound()

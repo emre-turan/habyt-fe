@@ -28,10 +28,9 @@ interface ListingCardProps {
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
-
   return (
     <Link href={`/listings/${listing.referenceId}`} className="block">
-      <Card className="overflow-hidden hover:shadow-md transition-shadow flex flex-col py-0">
+      <Card className="overflow-hidden hover:shadow-md flex flex-col py-0 border-accent hover:border-primary transition-all duration-200">
         {/* Image */}
         <ListingImage listing={listing} priority />
 
