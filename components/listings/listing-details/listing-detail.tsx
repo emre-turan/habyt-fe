@@ -17,6 +17,7 @@ import type { Listing } from "@/types/listing"
 import { formatCurrency } from "@/lib/format-currency"
 import { formatMinimumStay } from "@/lib/lease-conditions"
 import { formatShareType } from "@/lib/share-types"
+import { formatAvailableDate } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -39,15 +40,6 @@ export function ListingDetail({ listing }: ListingDetailProps) {
     const descriptions = [...(listing.roomDescriptions || [])]
     const englishDesc = descriptions.find((desc) => desc.language === "EN")
     return englishDesc?.description || "No description available"
-  }
-
-  // Format the available date
-  const formatAvailableDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
   }
 
   // Check if lease conditions exist

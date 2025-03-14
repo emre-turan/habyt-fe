@@ -19,9 +19,9 @@ export function ListingMap({ listing }: ListingMapProps) {
       listing.propertyLatitude &&
       listing.propertyLongitude
     ) {
-      // This is where you would initialize your map
+      // This is where we would initialize our map
       // For example with Google Maps, Mapbox, Leaflet, etc.
-      // For now, we'll just show a placeholder with the coordinates
+      // For now, I'll just show a placeholder with the coordinates
 
       const mapElement = mapRef.current
       mapElement.innerHTML = `
