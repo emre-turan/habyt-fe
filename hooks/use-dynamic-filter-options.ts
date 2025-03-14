@@ -133,9 +133,8 @@ export function useDynamicFilterOptions(
       }
       return result
     } catch (error) {
-      // Silently handle errors and return defaults
       console.error("Error processing filter options:", error)
       return DEFAULT_OPTIONS
     }
-  }, [listings]) // Only recalculate when listings change
+  }, [listings])
 }

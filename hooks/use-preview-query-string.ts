@@ -29,34 +29,47 @@ export function usePreviewQueryString(filters: FilterState) {
   return useCallback(() => {
     const params = new URLSearchParams()
 
-    if (filters.city && filters.city !== "all") {
-      params.append("city", filters.city)
-    }
+    const paramMapping = [
+      {
+        key: "city",
+        value: filters.city,
+        condition: filters.city && filters.city !== "all",
+      },
+      {
+        key: "rentFrom",
+        value: filters.rentFrom,
+        condition: !!filters.rentFrom,
+      },
+      { key: "rentTo", value: filters.rentTo, condition: !!filters.rentTo },
+      {
+        key: "bedroomsFrom",
+        value: filters.bedroomsFrom,
+        condition: !!filters.bedroomsFrom,
+      },
+      {
+        key: "bedroomsTo",
+        value: filters.bedroomsTo,
+        condition: !!filters.bedroomsTo,
+      },
+      {
+        key: "bookableOn",
+        value: filters.date?.toISOString().split("T")[0],
+        condition: !!filters.date,
+      },
+    ]
 
+    // Add simple parameters
+    paramMapping.forEach(({ key, value, condition }) => {
+      if (condition && value) {
+        params.append(key, value.toString())
+      }
+    })
+
+    // Handle array parameters separately
     if (filters.selectedShareTypes.length > 0) {
       filters.selectedShareTypes.forEach((type) => {
         params.append("shareType", type)
       })
-    }
-
-    if (filters.rentFrom) {
-      params.append("rentFrom", filters.rentFrom.toString())
-    }
-
-    if (filters.rentTo) {
-      params.append("rentTo", filters.rentTo.toString())
-    }
-
-    if (filters.bedroomsFrom) {
-      params.append("bedroomsFrom", filters.bedroomsFrom.toString())
-    }
-
-    if (filters.bedroomsTo) {
-      params.append("bedroomsTo", filters.bedroomsTo.toString())
-    }
-
-    if (filters.date) {
-      params.append("bookableOn", filters.date.toISOString().split("T")[0])
     }
 
     // Add a large pageSize to get all available options
