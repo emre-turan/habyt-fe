@@ -370,7 +370,7 @@ const ContactButton = ({ referenceId }: { referenceId: string }) => (
 
 const ListingSummaryCard = ({ listing }: { listing: Listing }) => (
   <Card className="sticky top-4 md:top-8">
-    <CardContent className="p-4 md:p-6">
+    <CardContent>
       <div className="flex justify-between items-start mb-4 md:mb-6">
         <PriceDisplay
           rentNet={listing.rentNet}

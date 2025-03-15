@@ -53,7 +53,7 @@ export function DatePicker({
         </Button>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="w-[300px] sm:max-w-[425px]">
+          <DialogContent className="w-[300px] sm:max-w-[425px] ps-3">
             <DialogHeader>
               <DialogTitle className="text-base">{label}</DialogTitle>
             </DialogHeader>
