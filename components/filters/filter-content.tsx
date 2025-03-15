@@ -2,10 +2,10 @@
 
 import { X } from "lucide-react"
 
-import { getShareTypeOptions } from "@/lib/share-types"
 import { useCitiesQuery } from "@/hooks/queries/use-cities-query"
 import { useListingsQuery } from "@/hooks/queries/use-listings-query"
 import { useDynamicFilterOptions } from "@/hooks/use-dynamic-filter-options"
+import { useFilterShareTypes } from "@/hooks/use-filter-share-types"
 import { useListingsFilters } from "@/hooks/use-listing-filters"
 import { usePreviewQueryString } from "@/hooks/use-preview-query-string"
 import { Button } from "@/components/ui/button"
@@ -41,11 +41,8 @@ export function FilterContent() {
 
   // Use preview listings for dynamic filter options
   const dynamicOptions = useDynamicFilterOptions(previewListings)
-  // Get share type options from dynamic options or fallback to utility
-  const shareTypes =
-    dynamicOptions.shareTypes.length > 0
-      ? dynamicOptions.shareTypes
-      : getShareTypeOptions()
+
+  const shareTypes = useFilterShareTypes(filters, dynamicOptions.shareTypes)
 
   const {
     city,
