@@ -34,6 +34,7 @@ export function DatePicker({
 }: DatePickerProps) {
   const isMobile = useMobile()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   if (isMobile) {
     return (
@@ -64,7 +65,6 @@ export function DatePicker({
                 setIsDialogOpen(false)
               }}
               initialFocus
-
             />
           </DialogContent>
         </Dialog>
@@ -73,7 +73,7 @@ export function DatePicker({
   }
 
   return (
-    <Popover>
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverTrigger asChild>
         <Button
           id="desktop-date-picker"
@@ -91,7 +91,10 @@ export function DatePicker({
         <Calendar
           mode="single"
           selected={date}
-          onSelect={onSelect}
+          onSelect={(newDate) => {
+            onSelect(newDate)
+            setIsPopoverOpen(false)
+          }}
           initialFocus
         />
       </PopoverContent>
