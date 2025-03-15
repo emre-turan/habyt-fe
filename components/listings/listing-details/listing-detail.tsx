@@ -161,6 +161,7 @@ const PropertyDescription = ({
     <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">
       About this space
     </h2>
+
     <p className="text-sm md:text-base text-muted-foreground whitespace-pre-line">
       {getEnglishDescription(descriptions)}
     </p>
@@ -168,7 +169,7 @@ const PropertyDescription = ({
 )
 
 const PropertyDetailItem = ({ label, value }: PropertyDetailItemProps) => (
-  <div className="flex items-center gap-x-2">
+  <div className="flex items-start gap-x-2">
     <span className="text-muted-foreground font-medium">{label}</span>
     <span>{value}</span>
   </div>
@@ -198,7 +199,7 @@ const ApartmentDetails = ({ listing }: { listing: Listing }) => (
 )
 
 const LeaseConditionItem = ({ label, value }: LeaseConditionItemProps) => (
-  <div className="flex items-center gap-x-2">
+  <div className="flex items-start gap-x-2">
     <span className="text-muted-foreground font-medium">{label}</span>
     <span>{value}</span>
   </div>

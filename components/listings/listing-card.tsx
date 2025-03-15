@@ -36,11 +36,11 @@ export function ListingCard({ listing, index = 0 }: ListingCardProps) {
         {/* Image */}
         <ListingImage listing={listing} priority={isPriority} />
 
-        <CardHeader>
+        <CardHeader className="h-14">
           <CardTitle className="font-bold">
             {formatShareType(listing.shareType)}
           </CardTitle>
-          <CardDescription className="font-light">
+          <CardDescription className="font-light italic">
             {listing.propertyAddress}
           </CardDescription>
         </CardHeader>

@@ -71,7 +71,7 @@ export function ListingImage({
         <Badge
           className={cn(
             geistMono.className,
-            "absolute top-2 right-2 bg-primary text-primary-foreground uppercase font-normal"
+            "absolute top-2 right-2 uppercase font-normal"
           )}
         >
           {formatShareType(listing.shareType)}
