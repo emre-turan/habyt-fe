@@ -1,24 +1,16 @@
 "use client"
 
-import { format } from "date-fns"
-import { CalendarIcon, X } from "lucide-react"
+import { X } from "lucide-react"
 
 import type { FilterActions, FilterSetters, FilterState } from "@/types/filter"
 import { getShareTypeOptions } from "@/lib/share-types"
-import { cn } from "@/lib/utils"
 import { useCitiesQuery } from "@/hooks/queries/use-cities-query"
 import { useListingsQuery } from "@/hooks/queries/use-listings-query"
 import { useDynamicFilterOptions } from "@/hooks/use-dynamic-filter-options"
 import { usePreviewQueryString } from "@/hooks/use-preview-query-string"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import {
   Select,
   SelectContent,
@@ -30,6 +22,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { OptionSelectFilter } from "@/components/filters/option-select-filter"
 import { HelpTooltip } from "@/components/shared/help-tooltip"
 import { Loading } from "@/components/shared/loading"
+
+import { DatePicker } from "./date-picker"
 
 interface FilterContentProps {
   filters: FilterState
@@ -66,7 +60,6 @@ export function FilterContent({
     rentTo,
     selectedShareTypes,
     date,
-    calendarOpen,
     bedroomsFrom,
     bedroomsTo,
   } = filters
@@ -74,7 +67,6 @@ export function FilterContent({
     setCity,
     setRentFrom,
     setRentTo,
-    setCalendarOpen,
     setSelectedShareTypes,
     setBedroomsFrom,
     setBedroomsTo,
@@ -187,34 +179,15 @@ export function FilterContent({
           </div>
         </div>
 
-        {/* Move-in date filter */}
         <div className="space-y-2 h-14">
           <Label htmlFor="bookableOn" className="text-sm font-medium">
             Move-in Date
           </Label>
-          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                id="bookableOn"
-                variant={"outline"}
-                className={cn(
-                  "w-full justify-start text-left font-normal bg-background hover:bg-accent hover:text-accent-foreground transition-colors",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={handleSelectDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+          <DatePicker
+            date={date}
+            onSelect={handleSelectDate}
+            label="Select Move-in Date"
+          />
         </div>
       </div>
 
