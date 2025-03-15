@@ -1,14 +1,11 @@
 "use client"
 
-import { X } from "lucide-react"
-
 import { useCitiesQuery } from "@/hooks/queries/use-cities-query"
 import { useListingsQuery } from "@/hooks/queries/use-listings-query"
 import { useDynamicFilterOptions } from "@/hooks/use-dynamic-filter-options"
 import { useFilterShareTypes } from "@/hooks/use-filter-share-types"
 import { useListingsFilters } from "@/hooks/use-listing-filters"
 import { usePreviewQueryString } from "@/hooks/use-preview-query-string"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -23,8 +20,8 @@ import { OptionSelectFilter } from "@/components/filters/option-select-filter"
 import { HelpTooltip } from "@/components/shared/help-tooltip"
 import { Loading } from "@/components/shared/loading"
 
-import { Badge } from "../ui/badge"
 import { DatePicker } from "./date-picker"
+import { FilterActionButtons } from "./filter-action-buttons"
 
 export function FilterContent() {
   const { filters, setters, actions } = useListingsFilters()
@@ -197,20 +194,11 @@ export function FilterContent() {
       </div>
 
       {/* Action buttons */}
-      <div className="flex justify-end space-x-2 pt-4">
-        <Button variant="outline" onClick={resetFilters}>
-          <X className="mr-2 size-4" />
-          Reset
-        </Button>
-        <Button onClick={applyFilters}>
-          Apply Filters
-          {activeFilterCount > 0 && (
-            <Badge variant={"secondary"} className="ml-1">
-              {activeFilterCount}
-            </Badge>
-          )}
-        </Button>
-      </div>
+      <FilterActionButtons
+        onReset={resetFilters}
+        onApply={applyFilters}
+        activeFilterCount={activeFilterCount}
+      />
     </div>
   )
 }
