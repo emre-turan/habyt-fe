@@ -2,11 +2,11 @@
 
 import { X } from "lucide-react"
 
-import type { FilterActions, FilterSetters, FilterState } from "@/types/filter"
 import { getShareTypeOptions } from "@/lib/share-types"
 import { useCitiesQuery } from "@/hooks/queries/use-cities-query"
 import { useListingsQuery } from "@/hooks/queries/use-listings-query"
 import { useDynamicFilterOptions } from "@/hooks/use-dynamic-filter-options"
+import { useListingsFilters } from "@/hooks/use-listing-filters"
 import { usePreviewQueryString } from "@/hooks/use-preview-query-string"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,19 +23,12 @@ import { OptionSelectFilter } from "@/components/filters/option-select-filter"
 import { HelpTooltip } from "@/components/shared/help-tooltip"
 import { Loading } from "@/components/shared/loading"
 
+import { Badge } from "../ui/badge"
 import { DatePicker } from "./date-picker"
 
-interface FilterContentProps {
-  filters: FilterState
-  setters: FilterSetters
-  actions: FilterActions
-}
+export function FilterContent() {
+  const { filters, setters, actions } = useListingsFilters()
 
-export function FilterContent({
-  filters,
-  setters,
-  actions,
-}: FilterContentProps) {
   const { data: cities = [], isLoading: citiesLoading } = useCitiesQuery()
 
   // Get preview query string from the dedicated hook
@@ -72,6 +65,21 @@ export function FilterContent({
     setBedroomsTo,
   } = setters
   const { handleSelectDate, applyFilters, resetFilters } = actions
+
+  // Count active filters
+  const getActiveFilterCount = () => {
+    let count = 0
+    if (city && city !== "all") count++
+    if (selectedShareTypes.length > 0) count++
+    if (rentFrom) count++
+    if (rentTo) count++
+    if (bedroomsFrom) count++
+    if (bedroomsTo) count++
+    if (date) count++
+    return count
+  }
+
+  const activeFilterCount = getActiveFilterCount()
 
   return (
     <div className="space-y-6">
@@ -197,7 +205,14 @@ export function FilterContent({
           <X className="mr-2 size-4" />
           Reset
         </Button>
-        <Button onClick={applyFilters}>Apply Filters</Button>
+        <Button onClick={applyFilters}>
+          Apply Filters
+          {activeFilterCount > 0 && (
+            <Badge variant={"secondary"} className="ml-1">
+              {activeFilterCount}
+            </Badge>
+          )}
+        </Button>
       </div>
     </div>
   )
