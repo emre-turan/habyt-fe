@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 
-import { FilterContent } from "./filter-content"
+import { FilterContent } from "./filter-bar-content"
 
 export function FilterBar() {
   return (

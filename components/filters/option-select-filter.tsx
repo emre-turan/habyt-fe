@@ -19,6 +19,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { FilterItemWrapper } from "./filter-item-wrapper"
+
 interface Option {
   label: string
   value: string
@@ -53,73 +55,76 @@ export function OptionSelectFilter({
   }
 
   return (
-    <div className="relative">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="justify-between text-left font-normal w-full"
-          >
-            <span className="text-sm truncate max-w-[200px] inline-block">
-              {selectedValues.length
-                ? options
-                    .filter((opt) => selectedValues.includes(opt.value))
-                    .map((opt) => opt.label)
-                    .join(", ")
-                : "All Types of Stay"}
-            </span>
-            <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
-          <Command>
-            <CommandList>
-              <CommandGroup>
-                {/* All Types of Stay option */}
-                <CommandItem
-                  className="flex items-center p-2 cursor-pointer hover:underline"
-                  onSelect={handleClearAll}
-                >
-                  <span className="font-medium">All types of stay</span>
-                </CommandItem>
+    <FilterItemWrapper>
+      <Label className="text-sm font-medium">Type of Stay</Label>
+      <div className="relative">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="justify-between text-left font-normal w-full"
+            >
+              <span className="text-sm truncate max-w-[200px] inline-block">
+                {selectedValues.length
+                  ? options
+                      .filter((opt) => selectedValues.includes(opt.value))
+                      .map((opt) => opt.label)
+                      .join(", ")
+                  : "All Types of Stay"}
+              </span>
+              <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0" align="start">
+            <Command>
+              <CommandList>
+                <CommandGroup>
+                  {/* All Types of Stay option */}
+                  <CommandItem
+                    className="flex items-center p-2 cursor-pointer hover:underline"
+                    onSelect={handleClearAll}
+                  >
+                    <span className="font-medium">All types of stay</span>
+                  </CommandItem>
 
-                {/* Individual options with checkboxes */}
-                {options.map((option) => {
-                  const checkboxId = `${idPrefix}-option-${option.value}`
-                  return (
-                    <CommandItem
-                      key={option.value}
-                      className="flex items-center p-2 cursor-pointer hover:underline"
-                      onSelect={() => handleToggle(option.value)}
-                    >
-                      <div className="flex items-center space-x-2 flex-1">
-                        <Checkbox
-                          id={checkboxId}
-                          checked={selectedValues.includes(option.value)}
-                          onCheckedChange={() => handleToggle(option.value)}
-                          className="cursor-pointer"
-                        />
-                        <Label
-                          htmlFor={checkboxId}
-                          className="text-sm font-normal cursor-pointer flex-1"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            handleToggle(option.value)
-                          }}
-                        >
-                          {option.label}
-                        </Label>
-                      </div>
-                    </CommandItem>
-                  )
-                })}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </div>
+                  {/* Individual options with checkboxes */}
+                  {options.map((option) => {
+                    const checkboxId = `${idPrefix}-option-${option.value}`
+                    return (
+                      <CommandItem
+                        key={option.value}
+                        className="flex items-center p-2 cursor-pointer hover:underline"
+                        onSelect={() => handleToggle(option.value)}
+                      >
+                        <div className="flex items-center space-x-2 flex-1">
+                          <Checkbox
+                            id={checkboxId}
+                            checked={selectedValues.includes(option.value)}
+                            onCheckedChange={() => handleToggle(option.value)}
+                            className="cursor-pointer"
+                          />
+                          <Label
+                            htmlFor={checkboxId}
+                            className="text-sm font-normal cursor-pointer flex-1"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleToggle(option.value)
+                            }}
+                          >
+                            {option.label}
+                          </Label>
+                        </div>
+                      </CommandItem>
+                    )
+                  })}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </FilterItemWrapper>
   )
 }
