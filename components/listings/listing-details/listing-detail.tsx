@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 
@@ -77,7 +76,7 @@ interface PropertyDetailsSummaryProps {
 const getEnglishDescription = (
   descriptions: Array<{ language: string; description: string }> = []
 ): string => {
-  const englishDesc = descriptions.find((desc) => desc.language === "EN")
+  const englishDesc = descriptions.find((desc) => desc.language === "en")
   return englishDesc?.description || "No description available"
 }
 

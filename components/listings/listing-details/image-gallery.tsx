@@ -83,20 +83,20 @@ const GalleryNavigation = ({
     <Button
       variant="secondary"
       size="icon"
-      className="rounded-full opacity-80 hover:opacity-100"
+      className="opacity-80 hover:opacity-100"
       onClick={onPrevious}
       aria-label="Previous image"
     >
-      <ChevronLeft className="h-6 w-6" />
+      <ChevronLeft className="size-6" />
     </Button>
     <Button
       variant="secondary"
       size="icon"
-      className="rounded-full opacity-80 hover:opacity-100"
+      className="opacity-80 hover:opacity-100"
       onClick={onNext}
       aria-label="Next image"
     >
-      <ChevronRight className="h-6 w-6" />
+      <ChevronRight className="size-6" />
     </Button>
   </div>
 )
@@ -110,7 +110,7 @@ const GalleryImageDisplay = ({
   sizes,
 }: GalleryImageDisplayProps) => (
   <Image
-    src={image.url || "/placeholder.svg"}
+    src={image.url || "/placeholder-image.svg"}
     alt={alt}
     fill
     priority={priority}
@@ -130,14 +130,14 @@ const ThumbnailGallery = ({
       <button
         key={index}
         className={cn(
-          "relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0 border-2",
+          "relative w-20 h-20 overflow-hidden flex-shrink-0 border-2",
           index === currentIndex ? "border-primary" : "border-transparent"
         )}
         onClick={() => onSelect(index)}
         aria-label={`View image ${index + 1}`}
       >
         <Image
-          src={image.url || "/placeholder.svg"}
+          src={image.url || "/placeholder-image.svg"}
           alt={`Thumbnail ${index + 1}`}
           fill
           className="object-cover"
@@ -163,10 +163,10 @@ const FullscreenDialog = ({
       <Button
         variant="secondary"
         size="icon"
-        className="absolute bottom-4 right-4 rounded-full opacity-80 hover:opacity-100"
+        className="absolute bottom-4 right-4 opacity-80 hover:opacity-100"
         aria-label="View fullscreen"
       >
-        <Expand className="h-4 w-4" />
+        <Expand className="size-4" />
       </Button>
     </DialogTrigger>
     <DialogContent className="max-w-4xl w-[90vw] h-[90vh] p-0">
