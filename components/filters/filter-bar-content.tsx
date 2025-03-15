@@ -13,7 +13,7 @@ import { FilterActionButtons } from "./filter-action-buttons"
 import { MoveInDateFilter } from "./move-in-date-filter"
 import { PriceRangeFilter } from "./price-range-filter"
 
-export function FilterContent() {
+export function FilterBarContent() {
   const { filters, setters, actions } = useListingsFilters()
 
   // Get preview query string from the dedicated hook

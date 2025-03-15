@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 
 import type { Listing } from "@/types/listing"
 import { useListingsQuery } from "@/hooks/queries/use-listings-query"
-import { Container } from "@/components/ui/container"
 import { FilterBar } from "@/components/filters/filter-bar"
 import { EmptyState } from "@/components/listings/empty-state"
 import { ErrorState } from "@/components/listings/error-state"
@@ -138,7 +137,7 @@ export default function Listings() {
   }
 
   return (
-    <Container className="py-4">
+    <>
       {/* Filter section */}
       <FilterBar />
 
@@ -151,6 +150,6 @@ export default function Listings() {
         error={error as Error | null}
         onPageChange={handlePageChange}
       />
-    </Container>
+    </>
   )
 }

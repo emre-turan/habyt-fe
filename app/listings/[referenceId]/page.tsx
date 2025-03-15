@@ -4,7 +4,6 @@ import { notFound } from "next/navigation"
 
 import type { APIResponse, Listing } from "@/types/listing"
 import { getMainImage } from "@/lib/listing-images"
-import { Container } from "@/components/ui/container"
 import { ListingDetail } from "@/components/listings/listing-details/listing-detail"
 
 // Function to fetch a specific listing by referenceId
@@ -12,7 +11,6 @@ async function getListingByReferenceId(
   referenceId: string
 ): Promise<Listing | null> {
   try {
-    // Read the JSON file directly (same approach as in the API route)
     const filePath = path.join(process.cwd(), "public", "data.json")
     const fileContents = fs.readFileSync(filePath, "utf8")
     const data: APIResponse = JSON.parse(fileContents)
@@ -84,9 +82,5 @@ export default async function ListingPage({
     notFound()
   }
 
-  return (
-    <Container className="py-8">
-      <ListingDetail listing={listing} />
-    </Container>
-  )
+  return <ListingDetail listing={listing} />
 }

@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 
-import { FilterContent } from "./filter-bar-content"
+import { FilterBarContent } from "./filter-bar-content"
 
 export function FilterBar() {
   return (
@@ -28,7 +28,7 @@ export function FilterBar() {
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <FilterContent />
+          <FilterBarContent />
         </CardContent>
       </Card>
 
@@ -53,7 +53,7 @@ export function FilterBar() {
               Filter by city, type of stay, monthly rent, bedrooms, and move-in
               date.
             </DrawerDescription>
-            <FilterContent />
+            <FilterBarContent />
           </DrawerContent>
         </Drawer>
       </div>
