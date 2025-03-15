@@ -77,7 +77,6 @@ export default async function ListingPage({
 }) {
   const resolvedParams = await params
   const listing = await getListingByReferenceId(resolvedParams.referenceId)
-  console.log("listing", listing)
 
   if (!listing) {
     notFound()
