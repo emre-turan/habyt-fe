@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
@@ -48,6 +49,10 @@ export function FilterBar() {
               <FilterIcon className="mr-2 size-5" />
               Filter Options
             </DrawerTitle>
+            <DrawerDescription className="sr-only">
+              Filter by city, type of stay, monthly rent, bedrooms, and move-in
+              date.
+            </DrawerDescription>
             <FilterContent />
           </DrawerContent>
         </Drawer>
