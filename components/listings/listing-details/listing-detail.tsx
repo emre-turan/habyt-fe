@@ -169,8 +169,8 @@ const PropertyDescription = ({
 )
 
 const PropertyDetailItem = ({ label, value }: PropertyDetailItemProps) => (
-  <div className="flex items-center">
-    <span className="text-muted-foreground w-1/2">{label}</span>
+  <div className="flex items-center gap-x-2">
+    <span className="text-muted-foreground font-medium">{label}</span>
     <span>{value}</span>
   </div>
 )
@@ -199,8 +199,8 @@ const ApartmentDetails = ({ listing }: { listing: Listing }) => (
 )
 
 const LeaseConditionItem = ({ label, value }: LeaseConditionItemProps) => (
-  <div className="flex items-center">
-    <span className="text-muted-foreground w-1/2">{label}</span>
+  <div className="flex items-center gap-x-2">
+    <span className="text-muted-foreground font-medium">{label}</span>
     <span>{value}</span>
   </div>
 )
