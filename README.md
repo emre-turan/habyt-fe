@@ -1,115 +1,89 @@
-# Habyt Frontend Take-Home Assignment
+# Habyt Frontend Assignment
 
-This is a take-home assignment for frontend developer candidates at Habyt. The assignment aims to assess your ability to implement a filter interface for property listings using React and Next.js.
+## 🏠 Overview
 
-## Getting Started
+I'm thrilled to present my solution for the Habyt frontend assignment! This project has been an exciting opportunity to build a modern, user-friendly property listings interface that helps people find their perfect home.
 
-First, clone this repository and install the dependencies:
+Working with real estate data has been particularly enjoyable - there's something special about creating interfaces that help people with one of their most important decisions: where to live. The combination of visual elements, practical filtering, and data presentation makes this domain uniquely rewarding to work in.
 
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
+## ✨ Features Implemented
+
+- **Enhanced Filter UI**: Completely redesigned filter interface with dynamic options
+- **Responsive Design**: Fully responsive layout that works beautifully on all devices
+- **Detailed Listing View**: Created an immersive detailed view for individual properties
+- **Dynamic Filter Options**: Options that update based on available data
+- **Loading States**: Smooth loading experiences with skeleton loaders
+- **Lazy Loading Images**: Optimized image loading with lazy loading for better performance
+- **Client-side Caching**: Optimized performance with strategic data caching
+- **Accessibility**: Implemented keyboard navigation and screen reader support
+
+...and more!
+
+## 🛠️ Technical Decisions
+
+### Modern Stack
+
+- **Next.js 15 with Turbo**: Leveraging the latest Next.js features for optimal performance
+- **React 19**: Taking advantage of the latest React improvements
+- **TypeScript**: Full type safety throughout the application
+- **Tailwind CSS v4**: Utility-first styling with the latest Tailwind features and with power of Lightning CSS
+- **Bun Package Manager**: Ultra-fast dependency management and script execution
+
+### Architecture & Patterns
+
+- **shadcn/ui Components**: Used for consistent, accessible UI elements that can be fully customized and fully compatible with Tailwind CSS v4
+- **TanStack Query**: Implemented for data fetching with sophisticated caching strategies instead of raw useEffect
+- **Custom Hooks Architecture**: Created a suite of specialized hooks for clean separation of concerns
+- **Modular Code Structure**: Organized by domain with clear component boundaries
+- **Comprehensive JSDoc**: Added detailed documentation for all custom hooks and utilities
+
+### Client-side vs Server-side Fetching
+
+I chose to enhance the existing client-side data fetching architecture with TanStack Query rather than completely refactoring to server-side fetching. This decision was based on:
+
+1. The highly interactive nature of the filtering UI, which benefits from client-side data management
+2. The ability to implement sophisticated caching and loading states quickly
+3. Practical time constraints of the assignment
+
+In a production environment with more time, I would implement a hybrid approach with server components for initial page loads and SEO-critical content, while maintaining client-side fetching for the interactive filtering experience.
+
+## 🚀 Running the Project
+
+```shellscript
+# Clone the repository
+git clone https://github.com/emre-turan/habyt-fe.git
+cd habyt-fe-assignment
+
+# Install dependencies with Bun
+bun install
+
+# Start the development server
+bun run dev
+
+# Build for production
+bun run build
+
+# Start the production server
+bun run start
 ```
 
-Then, run the development server:
+## 🔍 Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+```plaintext
+habyt-fe/
+├── app/                  # Next.js app directory
+│   ├── api/              # API routes
+│   ├── listings/         # Listings pages
+│   └── layout.tsx        # Root layout
+├── components/           # React components
+│   ├── filters/          # Filter components
+│   ├── listings/         # Listing components
+│   ├── shared/           # Shared components
+│   └── ui/               # shadcn/ui components
+├── hooks/                # Custom React hooks
+│   ├── queries/          # Data fetching hooks
+│   └── ...               # Other specialized hooks
+├── lib/                  # Utility functions
+├── public/               # Static assets
+└── types/                # TypeScript type definitions
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Assignment Overview
-
-In this assignment, you will be working on a listings page that displays available properties. The page already has a basic structure in place, but your task is to enhance the filtering functionality to match the Habyt design and improve the user experience.
-
-### Existing Features
-
-1. A listings page that displays properties from a mock API
-2. Basic filtering functionality including:
-   - Filter by city
-   - Filter by rent range
-   - Filter by move-in date
-   - Filter by property type
-3. Pagination of results
-
-### Your Tasks
-
-1. **Enhance the Filter UI**: 
-   - Improve the visual design of the filter interface based on [Habyt's design principles](https://www.habyt.com)
-   - Add additional filters from the API specification (see the OpenAPI spec in `openapi.yml`)
-   - Implement dynamic filter options that update based on available data
-
-2. **Improve User Experience**:
-   - Add loading states for filters and results
-   - Implement client-side caching to minimize API requests
-   - Ensure responsive behavior on mobile devices
-   - Add clear feedback when no results match filters
-
-3. **Additional Features** (Choose at least 2):
-   - Implement a map view of properties using a mapping library
-   - Add a "save filters" feature with local storage
-   - Create a detailed view for individual listings
-   - Add sorting options for results (by price, availability date, etc.)
-   - Implement "lazy loading" of listing images for better performance
-   - Implement pagination with server-side support (optimize the API route for better performance with large datasets)
-   - Add accessibility features for keyboard navigation and screen readers
-
-## Technical Details
-
-### API Endpoint
-
-A mock API endpoint is available at `/api/listings` that returns property data. The endpoint accepts some query parameters for filtering as based upon our current API as documentated in the OpenAPI specification (`openapi.yml`).
-
-Key filter parameters include:
-- `city`: Filter by city name
-- `rentFrom` and `rentTo`: Filter by rent range
-- `bookableOn`: Filter by availability date
-- `shareType`: Filter by property type (PrivateApartment, Studio, PrivateRoom, SharedRoom)
-- `page` and `pageSize`: For pagination (0-based page index)
-
-### Data Structure
-
-The response from the API follows this structure:
-
-```typescript
-{
-  metadata: {
-    pagination: {
-      currentPage: number;
-      currentPageSize: number;
-      totalPages: number;
-      hasNextPage: boolean;
-      hasPrevPage: boolean;
-    }
-  },
-  data: Listing[]
-}
-```
-
-The `Listing` type is defined in `app/types/listing.ts` and follows the schema in the OpenAPI specification.
-
-## Evaluation Criteria
-
-Your submission will be evaluated based on:
-
-1. **Code Quality**: Well-structured, maintainable code that follows best practices
-2. **User Experience**: Intuitive interface with responsive design
-3. **Technical Implementation**: Effective use of React hooks, state management, and Next.js features
-4. **Visual Design**: Clean, professional UI that aligns with Habyt's design
-5. **Performance**: Efficient rendering and data fetching strategies
-
-## Submission
-
-Please submit your solution as a GitHub repository or a compressed archive of your project. Include a brief README explaining your approach, any architectural decisions you made, and instructions for running your solution.
-
-Feel free to add any libraries or tools that you think would help you complete the assignment, but be prepared to explain your choices.
-
-Good luck!
