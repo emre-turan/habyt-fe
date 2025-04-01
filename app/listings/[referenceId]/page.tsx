@@ -32,7 +32,7 @@ async function getListingByReferenceId(
  */
 function getEnglishDescription(listing: Listing): string {
   const englishDesc = listing.roomDescriptions?.find(
-    (desc) => desc.language === "EN"
+    (desc) => desc.language === "en"
   )?.description
 
   if (englishDesc) return englishDesc

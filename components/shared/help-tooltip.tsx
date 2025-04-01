@@ -1,5 +1,3 @@
-import { ReactNode } from "react"
-
 import { HelpCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -11,7 +9,7 @@ import {
 } from "@/components/ui/tooltip"
 
 interface HelpTooltipProps {
-  children: ReactNode
+  children: React.ReactNode
   className?: string
 }
 
